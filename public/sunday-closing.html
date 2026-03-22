@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sunday Closing · JP & Ashley</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0d1117;--surface:#111820;--surface2:#161f2b;--gold:#c9a84c;--gold-b:#a8872e;--gold-glow:rgba(201,168,76,0.1);--text:#e8e4da;--muted:#7a8394;--dim:#4a5568;--line:rgba(255,255,255,0.07);--r:4px;--err:#c97a6a;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:18px;line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased;}
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;padding:0 20px 80px;}
+.screen.active{display:flex;}
+.top-nav{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;padding:24px 0 20px;border-bottom:1px solid var(--line);margin-bottom:36px;}
+.nav-brand{font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--muted);}
+.nav-back{font-size:13px;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.display-h{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;line-height:1.1;}
+.wrap{width:100%;max-width:500px;}
+.pin-wrap{display:flex;flex-direction:column;align-items:center;padding-top:60px;width:100%;max-width:340px;}
+.pin-dots{display:flex;gap:18px;margin:32px 0 8px;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold-b);transition:all 0.15s;}
+.pin-dot.filled{background:var(--gold);border-color:var(--gold);}
+.pin-err{font-size:14px;color:var(--err);text-align:center;height:22px;margin-bottom:16px;}
+.pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;}
+.pin-key{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 0;font-family:'Playfair Display',serif;font-size:24px;color:var(--text);cursor:pointer;text-align:center;transition:all 0.12s;-webkit-tap-highlight-color:transparent;user-select:none;}
+.pin-key:active{background:var(--gold-glow);border-color:var(--gold-b);transform:scale(0.95);}
+.scripture-card{border:1px solid var(--gold-b);border-radius:var(--r);padding:24px;margin-bottom:24px;background:var(--surface);}
+.scripture-eyebrow{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.scripture-verse{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;line-height:1.75;margin-bottom:14px;}
+.scripture-ref{font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.prompt-panel{background:var(--surface2);border:1px solid var(--gold-b);border-radius:var(--r);padding:20px;margin-bottom:6px;}
+.prompt-panel-label{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.prompt-list{display:flex;flex-direction:column;gap:12px;}
+.prompt-item{display:flex;align-items:flex-start;gap:12px;font-size:17px;line-height:1.6;color:var(--muted);}
+.prompt-num{flex-shrink:0;width:24px;height:24px;border:1px solid var(--gold-b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gold);margin-top:2px;}
+.input-block{margin:24px 0 0;}
+.input-label{display:block;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.drop-area{width:100%;background:var(--surface);border:1px solid var(--gold-b);border-radius:var(--r);padding:20px;min-height:160px;color:var(--text);font-family:'Barlow',sans-serif;font-size:18px;line-height:1.7;resize:vertical;-webkit-appearance:none;transition:border-color 0.2s;}
+.drop-area:focus{outline:none;border-color:var(--gold);}
+.drop-area::placeholder{color:var(--dim);}
+.mic-row{margin-top:12px;}
+.mic-btn{width:100%;padding:16px;background:var(--surface2);border:1px solid var(--gold-b);border-radius:var(--r);font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.mic-btn.recording{background:var(--gold-glow);border-color:var(--gold);color:var(--gold);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.btn{width:100%;padding:20px;border-radius:var(--r);border:none;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.18s;-webkit-tap-highlight-color:transparent;margin-top:12px;}
+.btn-primary{background:var(--gold-b);color:var(--bg);}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:12px;padding:16px;}
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px;}
+.loading-title{font-family:'Playfair Display',serif;font-size:24px;font-style:italic;color:var(--muted);}
+.loading-dots{display:flex;gap:8px;}
+.loading-dot{width:8px;height:8px;border-radius:50%;background:var(--gold-b);animation:ldot 1.4s infinite;}
+.loading-dot:nth-child(2){animation-delay:0.2s;}
+.loading-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes ldot{0%,80%,100%{transform:scale(0.6);opacity:0.3;}40%{transform:scale(1);opacity:1;}}
+.category-card{border:1px solid var(--gold-b);border-radius:var(--r);margin-bottom:16px;background:var(--surface);overflow:hidden;}
+.cat-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;}
+.cat-icon{font-size:18px;}
+.cat-label{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+.cat-body{padding:20px;font-size:18px;line-height:1.75;}
+.cat-body.empty{color:var(--dim);font-style:italic;font-size:16px;}
+.cat-body.italic{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;}
+.covenant-word{border:1px solid var(--gold);border-radius:var(--r);padding:24px;margin-bottom:16px;background:var(--gold-glow);}
+.covenant-word-label{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.covenant-word-text{font-family:'Playfair Display',serif;font-size:20px;font-style:italic;line-height:1.75;}
+.yaml-toggle{font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--dim);cursor:pointer;margin-bottom:12px;display:block;}
+.yaml-block{background:var(--surface2);border:1px solid var(--line);border-radius:var(--r);padding:20px;font-family:monospace;font-size:13px;line-height:1.8;color:var(--muted);white-space:pre-wrap;word-break:break-word;display:none;margin-bottom:16px;}
+.success-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:0 20px;}
+.success-mark{font-family:'Playfair Display',serif;font-size:64px;color:var(--gold);margin-bottom:24px;}
+.success-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;margin-bottom:10px;}
+.success-text{font-size:17px;color:var(--muted);max-width:280px;margin:0 auto 40px;}
+</style>
+</head>
+<body>
+
+<div id="s-pin" class="screen active">
+  <div class="top-nav"><div class="nav-brand">Sunday Closing</div></div>
+  <div class="pin-wrap">
+    <div class="eyebrow">Together</div>
+    <div class="display-h" style="margin-bottom:0">Sunday<br><em>Closing</em></div>
+    <div class="pin-dots"><div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div><div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div></div>
+    <div class="pin-err" id="pin-err"></div>
+    <div class="pin-keypad">
+      <div class="pin-key" onclick="pp('1')">1</div><div class="pin-key" onclick="pp('2')">2</div><div class="pin-key" onclick="pp('3')">3</div>
+      <div class="pin-key" onclick="pp('4')">4</div><div class="pin-key" onclick="pp('5')">5</div><div class="pin-key" onclick="pp('6')">6</div>
+      <div class="pin-key" onclick="pp('7')">7</div><div class="pin-key" onclick="pp('8')">8</div><div class="pin-key" onclick="pp('9')">9</div>
+      <div class="pin-key" style="color:var(--muted);font-size:18px" onclick="pc()">✕</div>
+      <div class="pin-key" onclick="pp('0')">0</div>
+      <div class="pin-key" style="color:var(--muted);font-size:16px" onclick="pb()">⌫</div>
+    </div>
+  </div>
+</div>
+
+<div id="s-drop" class="screen">
+  <div class="top-nav"><div class="nav-brand">Sunday Closing</div><div class="nav-back" onclick="go('s-pin')">Sign out</div></div>
+  <div class="wrap">
+    <div class="eyebrow" id="drop-date"></div>
+    <div class="display-h" style="margin-bottom:28px">Together,<br><em>Closing.</em></div>
+    <div class="scripture-card">
+      <div class="scripture-eyebrow">Scripture Into the Week</div>
+      <div class="scripture-verse" id="sc-verse"></div>
+      <div class="scripture-ref" id="sc-ref"></div>
+    </div>
+    <div class="prompt-panel">
+      <div class="prompt-panel-label">Speak through these together</div>
+      <div class="prompt-list">
+        <div class="prompt-item"><span class="prompt-num">1</span>What are you grateful for as a couple this week — one moment, one movement of God, one thing that held.</div>
+        <div class="prompt-item"><span class="prompt-num">2</span>What did this week reveal about your marriage — something you want to carry forward?</div>
+        <div class="prompt-item"><span class="prompt-num">3</span>What are you believing God for together in the week ahead?</div>
+        <div class="prompt-item"><span class="prompt-num">4</span>Speak a prayer together — over each other, over the covenant, over what's coming.</div>
+      </div>
+    </div>
+    <div class="input-block">
+      <span class="input-label">Your Joint Drop</span>
+      <textarea class="drop-area" id="lp-drop" placeholder="Speak through the prompts together. Freestyle is fine — the AI reads for meaning."></textarea>
+      <div class="mic-row">
+        <button class="mic-btn" id="mic-btn" onclick="toggleMic()"><span id="mic-icon">🎙</span><span id="mic-label">Tap to Speak</span></button>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="parseDrop()">Parse Sunday Closing →</button>
+    <button class="btn btn-ghost" onclick="document.getElementById('lp-drop').value=''">Clear</button>
+  </div>
+</div>
+
+<div id="s-loading" class="screen">
+  <div class="loading-wrap">
+    <div class="loading-title"><em>Reading your closing...</em></div>
+    <div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+  </div>
+</div>
+
+<div id="s-parsed" class="screen">
+  <div class="top-nav"><div class="nav-brand">Sunday Closing · Sealed</div><div class="nav-back" onclick="go('s-drop')">← Redo</div></div>
+  <div class="wrap">
+    <div class="eyebrow">Together</div>
+    <div class="display-h" style="margin-bottom:28px">The Week,<br><em>Sealed.</em></div>
+    <div id="covenant-word-block"></div>
+    <div id="parsed-cards"></div>
+    <span class="yaml-toggle" onclick="toggleYaml()">[ Export YAML ]</span>
+    <div class="yaml-block" id="yaml-out"></div>
+    <button class="btn btn-primary" onclick="submitDrop()">Seal the Week →</button>
+    <button class="btn btn-ghost" onclick="go('s-drop')">← Edit</button>
+  </div>
+</div>
+
+<div id="s-success" class="screen">
+  <div class="success-wrap">
+    <div class="success-mark">✦</div>
+    <div class="success-title">Week Sealed.</div>
+    <div class="success-text">The covenant record is logged. Go into the week together.</div>
+    <button class="btn btn-primary" style="max-width:320px" onclick="reset()">New Closing →</button>
+  </div>
+</div>
+
+<script>
+const PIN='0915';
+const SHEETS='https://script.google.com/a/macros/thefrankdeluca.com/s/AKfycbwTUV9PfrUoc8lmL83mAuKy-tmrcP9Vf8_e8FSKZ5iHLmdoYD_Qd6EOZSIlFd1hunxZfA/exec';
+const SCRIPTURES=[{ref:'Genesis 2:24',text:'A man shall leave his father and his mother and hold fast to his wife, and they shall become one flesh.'},{ref:'Matthew 19:6',text:'What therefore God has joined together, let not man separate.'},{ref:'Ecclesiastes 4:9-10',text:'Two are better than one, because they have a good reward for their toil. For if they fall, one will lift up his fellow.'},{ref:'1 Corinthians 13:4-7',text:'Love is patient and kind; love does not envy or boast; it is not arrogant or rude. It does not insist on its own way.'},{ref:'Colossians 3:14',text:'Above all these put on love, which binds everything together in perfect harmony.'},{ref:'Song of Solomon 8:6',text:'Set me as a seal upon your heart, as a seal upon your arm, for love is strong as death.'},{ref:'Zephaniah 3:17',text:'The Lord your God is in your midst; he will rejoice over you with gladness; he will quiet you by his love.'},{ref:'Joel 2:25',text:'I will restore to you the years that the swarming locust has eaten.'},{ref:'Isaiah 58:12',text:'Your ancient ruins shall be rebuilt; you shall raise up the foundations of many generations.'},{ref:'Hebrews 10:24',text:'Let us consider how to stir up one another to love and good works.'},{ref:'Romans 15:13',text:'May the God of hope fill you with all joy and peace in believing.'},{ref:'Malachi 2:14',text:'The Lord was witness between you and the wife of your youth — she is your companion and your wife by covenant.'},{ref:'Ruth 1:16',text:'Where you go I will go, and where you stay I will stay. Your people will be my people and your God my God.'},{ref:'1 Peter 4:8',text:'Above all, keep loving one another earnestly, since love covers a multitude of sins.'},{ref:'2 Chronicles 7:14',text:'If my people who are called by my name humble themselves, and pray and seek my face, then I will hear from heaven and heal their land.'}];
+
+let pin='',rec=null,isRec=false,parsedData=null,rawDrop='',sc=null;
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function reset(){document.getElementById('lp-drop').value='';parsedData=null;rawDrop='';go('s-drop');}
+function pp(d){if(pin.length>=4)return;pin+=d;updateDots();if(pin.length===4)checkPin();}
+function pb(){pin=pin.slice(0,-1);updateDots();document.getElementById('pin-err').textContent='';}
+function pc(){pin='';updateDots();document.getElementById('pin-err').textContent='';}
+function updateDots(){for(let i=0;i<4;i++)document.getElementById(`d${i}`).classList.toggle('filled',i<pin.length);}
+function checkPin(){if(pin===PIN){initDrop();}else{document.getElementById('pin-err').textContent='Incorrect. Try again.';setTimeout(()=>{pin='';updateDots();document.getElementById('pin-err').textContent='';},1400);}}
+function initDrop(){const n=new Date();document.getElementById('drop-date').textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});sc=SCRIPTURES[Math.floor((n-new Date(n.getFullYear(),0,0))/86400000)%SCRIPTURES.length];document.getElementById('sc-verse').textContent=`"${sc.text}"`;document.getElementById('sc-ref').textContent=`${sc.ref} · ESV`;go('s-drop');}
+function toggleMic(){if(!('SpeechRecognition' in window||'webkitSpeechRecognition' in window)){alert('Speech recognition unavailable. Please type.');return;}isRec?stopMic():startMic();}
+function startMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang='en-US';const ta=document.getElementById('lp-drop');let base=ta.value;rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)base+=e.results[i][0].transcript+' ';else interim+=e.results[i][0].transcript;}ta.value=base+interim;};rec.onerror=()=>stopMic();rec.onend=()=>stopMic();rec.start();isRec=true;document.getElementById('mic-btn').classList.add('recording');document.getElementById('mic-icon').textContent='⏹';document.getElementById('mic-label').textContent='Recording — Tap to Stop';}
+function stopMic(){if(rec)rec.stop();isRec=false;document.getElementById('mic-btn').classList.remove('recording');document.getElementById('mic-icon').textContent='🎙';document.getElementById('mic-label').textContent='Tap to Speak';}
+
+async function parseDrop(){
+  const drop=document.getElementById('lp-drop').value.trim();
+  if(!drop){alert('Drop something together first.');return;}
+  rawDrop=drop;go('s-loading');
+  const today=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  try{
+    const resp=await fetch('/api/parse',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tool:'sunday_closing',drop,scripture:sc,date:today})
+    });
+    const result=await resp.json();
+    if(!result.success)throw new Error(result.error||'Parse failed');
+    parsedData=result.data;
+    renderParsed();go('s-parsed');
+  }catch(err){
+    console.error(err);
+    parsedData={covenant_word:'Drop received. Parse failed: '+err.message+'. Try again.',gratitude:'',revelation:'',believing_for:'',prayer:''};
+    renderParsed();go('s-parsed');
+  }
+}
+
+function renderParsed(){
+  const d=parsedData;
+  const mk=(ic,lb,ct,cls='')=>`<div class="category-card"><div class="cat-head"><span class="cat-icon">${ic}</span><span class="cat-label">${lb}</span></div><div class="cat-body${ct?'':' empty'}${cls?' '+cls:''}">${ct||'Nothing captured here.'}</div></div>`;
+  if(d.covenant_word){document.getElementById('covenant-word-block').innerHTML=`<div class="covenant-word"><div class="covenant-word-label">✦ Covenant Word</div><div class="covenant-word-text">${d.covenant_word}</div></div>`;}
+  let html='';
+  html+=mk('💛','Gratitude',d.gratitude);
+  html+=mk('🔍','What This Week Revealed',d.revelation);
+  html+=mk('🙌','Believing God For',d.believing_for);
+  html+=mk('🙏','Your Prayer Together',d.prayer,'italic');
+  document.getElementById('parsed-cards').innerHTML=html;
+  let yaml=`sunday_closing:\n  date: "${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}"\n`;
+  yaml+=`  scripture:\n    ref: "${sc.ref}"\n    text: "${sc.text}"\n`;
+  yaml+=`  raw_drop: |\n    ${rawDrop.replace(/\n/g,'\n    ')}\n`;
+  Object.entries(d).forEach(([k,v])=>{if(v)yaml+=`  ${k}: "${String(v).replace(/"/g,'\\"')}"\n`;});
+  document.getElementById('yaml-out').textContent=yaml;
+}
+
+function toggleYaml(){const el=document.getElementById('yaml-out');el.style.display=el.style.display==='block'?'none':'block';}
+
+async function submitDrop(){
+  const d=parsedData||{};
+  const payload={type:'SUNDAY_CLOSING',timestamp:new Date().toISOString(),date:new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),raw_drop:rawDrop,covenant_word:d.covenant_word||'',gratitude:d.gratitude||'',revelation:d.revelation||'',believing_for:d.believing_for||'',prayer:d.prayer||''};
+  try{await fetch(SHEETS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.error(e);}
+  go('s-success');
+}
+</script>
+</body>
+</html>

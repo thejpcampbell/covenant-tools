@@ -4,11 +4,11 @@ import React, { useState } from 'react'
 // PASTE YOUR CLAUDE ARTIFACT LINKS HERE
 // ══════════════════════════════════════════════════════════════
 const LINKS = {
-  jp_launchpad:      'https://claude.ai/public/artifacts/08ae9b1c-e431-4f32-9d3a-fac9f92466b8',
-  ashley_launchpad:  'https://claude.ai/public/artifacts/9b3b3b0d-0563-496b-820d-c2b116ad2381',
-  jp_checkin:        'https://claude.ai/public/artifacts/e7b48226-cf95-4ed6-baa4-d6d15aa519fe',
-  ashley_checkin:    'https://claude.ai/public/artifacts/818034ed-4d0d-41c3-9b02-7e902600c71f',
-  sunday_closing:    'https://claude.ai/public/artifacts/a95b5a71-69a4-4ff6-932f-7c3c35e93d70',
+  jp_launchpad:      '/jp-launchpad.html',
+  ashley_launchpad:  '/ashley-launchpad.html',
+  jp_checkin:        '/jp-checkin.html',
+  ashley_checkin:    '/ashley-checkin.html',
+  sunday_closing:    '/sunday-closing.html',
 }
 // ══════════════════════════════════════════════════════════════
 
