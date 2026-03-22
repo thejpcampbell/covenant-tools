@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Covenant Tools · JP & Ashley Campbell</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#03060c;
+  --s1:#070d16;--s2:#0a1220;
+  /* GOLD */
+  --g1:#ffd84a;--g2:#f5b820;--g3:#e89a00;--g4:#ffec80;
+  --gg:rgba(255,216,74,0.18);--ggg:rgba(255,216,74,0.35);
+  /* CYAN */
+  --c1:#00d4ff;--c2:#00aaee;--c3:#0088cc;--c4:#80eeff;
+  --cg:rgba(0,212,255,0.15);--cgg:rgba(0,212,255,0.3);
+  /* ASHLEY cyan-teal */
+  --a1:#38d9c0;--a2:#20b8a0;--a3:#108878;--a4:#80ffe8;
+  --ag:rgba(56,217,192,0.15);--agg:rgba(56,217,192,0.3);
+  --text:#eef4ff;--muted:#6a7a94;--dim:#2a3548;
+  --line:rgba(255,216,74,0.12);
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Barlow',sans-serif;font-size:16px;line-height:1.7;
+  min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+
+/* ── ATMOSPHERE ── */
+.atmo{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.atmo-top{
+  position:absolute;top:-30%;left:50%;transform:translateX(-50%);
+  width:140%;height:70%;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,216,74,0.14) 0%,rgba(0,212,255,0.06) 40%,transparent 65%);
+  filter:blur(50px);
+}
+.atmo-cyan{
+  position:absolute;top:20%;left:-15%;width:55%;height:60%;
+  background:radial-gradient(ellipse,rgba(0,212,255,0.12) 0%,transparent 60%);
+  filter:blur(70px);
+}
+.atmo-teal{
+  position:absolute;bottom:10%;right:-10%;width:50%;height:50%;
+  background:radial-gradient(ellipse,rgba(56,217,192,0.1) 0%,transparent 60%);
+  filter:blur(70px);
+}
+.atmo-grain{
+  position:absolute;inset:0;opacity:0.5;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.page{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 22px 120px;}
+
+/* ── HERO ── */
+.hero{padding:64px 0 52px;margin-bottom:48px;position:relative;}
+.hero::after{
+  content:'';position:absolute;bottom:0;left:-22px;right:-22px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--c2) 20%,var(--g1) 50%,var(--c2) 80%,transparent);
+  opacity:0.7;
+  box-shadow:0 0 20px rgba(255,216,74,0.3),0 0 40px rgba(0,212,255,0.2);
+}
+.eyebrow{
+  font-size:10px;font-weight:700;letter-spacing:7px;text-transform:uppercase;
+  color:var(--c1);opacity:0.8;margin-bottom:20px;
+  text-shadow:0 0 20px rgba(0,212,255,0.5);
+}
+.hero-title{
+  font-family:'Playfair Display',serif;font-weight:900;
+  font-size:clamp(58px,11vw,92px);line-height:0.9;margin-bottom:26px;
+}
+.t1{
+  display:block;color:var(--text);
+  text-shadow:0 0 80px rgba(0,212,255,0.15);
+}
+.t2{
+  display:block;font-style:italic;
+  background:linear-gradient(110deg,var(--g3) 0%,var(--g2) 20%,var(--g1) 45%,var(--g4) 60%,var(--g1) 75%,var(--g2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(255,216,74,0.7)) drop-shadow(0 0 70px rgba(255,216,74,0.4)) drop-shadow(0 0 120px rgba(255,184,32,0.3));
+  animation:goldPulse 3s ease-in-out infinite alternate;
+}
+@keyframes goldPulse{
+  0%{filter:drop-shadow(0 0 25px rgba(255,216,74,0.6)) drop-shadow(0 0 60px rgba(255,216,74,0.3));}
+  100%{filter:drop-shadow(0 0 50px rgba(255,236,128,0.9)) drop-shadow(0 0 100px rgba(255,216,74,0.5)) drop-shadow(0 0 160px rgba(255,184,32,0.3));}
+}
+.hero-sub{font-size:15px;color:var(--muted);max-width:440px;margin-bottom:32px;line-height:1.75;}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap;}
+.stat{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:7px;}
+.sdot{
+  width:5px;height:5px;border-radius:50%;background:var(--g1);
+  box-shadow:0 0 8px var(--g1),0 0 20px rgba(255,216,74,0.6);
+  animation:dotPulse 2s ease-in-out infinite alternate;
+}
+@keyframes dotPulse{
+  0%{box-shadow:0 0 6px var(--g1),0 0 12px rgba(255,216,74,0.4);}
+  100%{box-shadow:0 0 10px var(--g1),0 0 24px rgba(255,216,74,0.7),0 0 40px rgba(255,216,74,0.3);}
+}
+.stat b{color:var(--g1);font-weight:700;text-shadow:0 0 14px rgba(255,216,74,0.6);}
+
+/* ── FILTERS ── */
+.filters{display:flex;gap:2px;margin-bottom:40px;border-bottom:1px solid rgba(0,212,255,0.12);padding-bottom:0;}
+.fbtn{
+  padding:11px 18px;background:transparent;border:none;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;color:var(--dim);
+  cursor:pointer;transition:all 0.2s;
+}
+.fbtn:hover{color:var(--muted);}
+.fbtn.on{
+  color:var(--c1);border-bottom-color:var(--c1);
+  text-shadow:0 0 20px rgba(0,212,255,0.8),0 0 40px rgba(0,212,255,0.4);
+}
+
+/* ── SECTION LABELS ── */
+.slabel{
+  font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:14px;
+}
+.slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,255,0.2),transparent);}
+.sdiv{display:flex;align-items:center;gap:14px;margin:40px 0 16px;}
+.sdiv-line{flex:1;height:1px;}
+.sdiv-line.gold{background:linear-gradient(90deg,transparent,rgba(255,216,74,0.4),transparent);}
+.sdiv-line.teal{background:linear-gradient(90deg,transparent,rgba(56,217,192,0.35),transparent);}
+.sdiv-label{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--s1);border:1px solid rgba(0,212,255,0.08);
+  border-radius:4px;padding:26px;margin-bottom:12px;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:all 0.3s cubic-bezier(0.34,1.1,0.64,1);
+}
+/* top shimmer sweep */
+.card::before{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:1px;
+  transition:left 0.6s ease;opacity:0;
+}
+/* glow bg */
+.card::after{
+  content:'';position:absolute;inset:0;opacity:0;
+  transition:opacity 0.3s;pointer-events:none;
+}
+
+/* CYAN card — JP */
+.card.cc{border-color:rgba(0,212,255,0.1);}
+.card.cc::before{background:linear-gradient(90deg,transparent,var(--c1),var(--c4),var(--c1),transparent);}
+.card.cc::after{background:radial-gradient(ellipse 100% 80% at 0% 50%,rgba(0,212,255,0.12),transparent 60%);}
+.card.cc:hover{
+  border-color:rgba(0,212,255,0.55);
+  transform:translateY(-3px) scale(1.002);
+  box-shadow:0 12px 50px rgba(0,0,0,0.6),0 0 40px rgba(0,212,255,0.2),0 0 80px rgba(0,212,255,0.1),inset 0 0 30px rgba(0,212,255,0.04);
+}
+.card.cc:hover::before{left:100%;opacity:1;}
+.card.cc:hover::after{opacity:1;}
+
+/* TEAL card — Ashley */
+.card.ac{border-color:rgba(56,217,192,0.1);}
+.card.ac::before{background:linear-gradient(90deg,transparent,var(--a1),var(--a4),var(--a1),transparent);}
+.card.ac::after{background:radial-gradient(ellipse 100% 80% at 0% 50%,rgba(56,217,192,0.12),transparent 60%);}
+.card.ac:hover{
+  border-color:rgba(56,217,192,0.55);
+  transform:translateY(-3px) scale(1.002);
+  box-shadow:0 12px 50px rgba(0,0,0,0.6),0 0 40px rgba(56,217,192,0.2),0 0 80px rgba(56,217,192,0.1),inset 0 0 30px rgba(56,217,192,0.04);
+}
+.card.ac:hover::before{left:100%;opacity:1;}
+.card.ac:hover::after{opacity:1;}
+
+/* GOLD card — Together */
+.card.gc{border-color:rgba(255,216,74,0.1);}
+.card.gc::before{background:linear-gradient(90deg,transparent,var(--g2),var(--g4),var(--g2),transparent);}
+.card.gc::after{background:radial-gradient(ellipse 100% 80% at 0% 50%,rgba(255,216,74,0.1),transparent 60%);}
+.card.gc:hover{
+  border-color:rgba(255,216,74,0.55);
+  transform:translateY(-3px) scale(1.002);
+  box-shadow:0 12px 50px rgba(0,0,0,0.6),0 0 40px rgba(255,216,74,0.2),0 0 80px rgba(255,216,74,0.1),inset 0 0 30px rgba(255,216,74,0.04);
+}
+.card.gc:hover::before{left:100%;opacity:1;}
+.card.gc:hover::after{opacity:1;}
+
+/* BADGE */
+.badge{
+  position:absolute;top:18px;right:18px;
+  font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  padding:3px 9px;border-radius:2px;
+}
+.live{
+  background:rgba(0,255,120,0.08);border:1px solid rgba(0,255,120,0.3);color:#00ff88;
+  box-shadow:0 0 16px rgba(0,255,120,0.15),0 0 30px rgba(0,255,120,0.08);
+}
+.pending{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);color:var(--dim);}
+
+/* TAG */
+.ctag{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:9px;}
+.ctag.c{color:var(--c1);text-shadow:0 0 16px rgba(0,212,255,0.6);}
+.ctag.a{color:var(--a1);text-shadow:0 0 16px rgba(56,217,192,0.6);}
+.ctag.g{color:var(--g1);text-shadow:0 0 16px rgba(255,216,74,0.6);}
+
+.ctitle{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.2;}
+.cdesc{font-size:14px;color:var(--muted);line-height:1.65;padding-right:60px;margin-bottom:20px;}
+
+.cmeta{display:flex;gap:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.04);margin-bottom:20px;}
+.cmi{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--dim);}
+.cmi-dot{width:4px;height:4px;border-radius:50%;}
+.cmi-dot.c{background:var(--c1);box-shadow:0 0 8px var(--c1),0 0 16px rgba(0,212,255,0.5);}
+.cmi-dot.a{background:var(--a1);box-shadow:0 0 8px var(--a1),0 0 16px rgba(56,217,192,0.5);}
+.cmi-dot.g{background:var(--g1);box-shadow:0 0 8px var(--g1),0 0 16px rgba(255,216,74,0.5);}
+
+/* ── BUTTONS ── */
+.cbtn{
+  width:100%;padding:15px;border:none;border-radius:3px;
+  font-family:'Barlow',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:3px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;
+}
+.cbtn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.12) 50%,transparent 100%);
+  transform:translateX(-100%);transition:transform 0.5s;
+}
+.cbtn:hover::after{transform:translateX(100%);}
+
+.cbtn.cyan{
+  background:linear-gradient(135deg,#002840,var(--c3) 40%,var(--c1));
+  color:var(--bg);
+  box-shadow:0 4px 24px rgba(0,212,255,0.35),0 0 40px rgba(0,212,255,0.15),inset 0 1px 0 rgba(128,238,255,0.3);
+}
+.cbtn.cyan:hover{
+  box-shadow:0 6px 40px rgba(0,212,255,0.6),0 0 80px rgba(0,212,255,0.25),inset 0 1px 0 rgba(128,238,255,0.4);
+  transform:translateY(-2px);
+}
+.cbtn.teal{
+  background:linear-gradient(135deg,#002822,var(--a3) 40%,var(--a1));
+  color:var(--bg);
+  box-shadow:0 4px 24px rgba(56,217,192,0.35),0 0 40px rgba(56,217,192,0.15),inset 0 1px 0 rgba(128,255,232,0.3);
+}
+.cbtn.teal:hover{
+  box-shadow:0 6px 40px rgba(56,217,192,0.6),0 0 80px rgba(56,217,192,0.25),inset 0 1px 0 rgba(128,255,232,0.4);
+  transform:translateY(-2px);
+}
+.cbtn.gold{
+  background:linear-gradient(135deg,#6b4200,var(--g3) 35%,var(--g1) 65%,var(--g4));
+  color:#03060c;font-weight:900;
+  box-shadow:0 4px 24px rgba(255,216,74,0.4),0 0 50px rgba(255,216,74,0.2),inset 0 1px 0 rgba(255,240,128,0.4);
+}
+.cbtn.gold:hover{
+  box-shadow:0 6px 40px rgba(255,216,74,0.65),0 0 100px rgba(255,216,74,0.3),inset 0 1px 0 rgba(255,240,128,0.5);
+  transform:translateY(-2px);
+}
+
+/* ── COVENANT BAR ── */
+.cov-bar{
+  margin-top:52px;
+  background:linear-gradient(135deg,rgba(6,12,20,0.97),rgba(3,6,10,0.99));
+  border:1px solid rgba(255,216,74,0.2);
+  border-radius:4px;padding:28px;position:relative;overflow:hidden;
+  box-shadow:
+    0 0 60px rgba(255,216,74,0.08),
+    0 0 120px rgba(0,212,255,0.05),
+    inset 0 1px 0 rgba(255,216,74,0.15),
+    inset 0 0 60px rgba(255,216,74,0.02);
+}
+.cov-bar::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 5%,var(--c2) 25%,var(--g1) 50%,var(--c2) 75%,transparent 95%);
+  opacity:0.8;
+  box-shadow:0 0 20px rgba(255,216,74,0.5),0 0 40px rgba(0,212,255,0.3);
+}
+.cov-bar::after{
+  content:'';position:absolute;
+  top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(255,216,74,0.04),transparent 50%);
+  pointer-events:none;
+}
+.cov-inner{display:flex;align-items:flex-start;gap:18px;position:relative;z-index:1;}
+.cov-mark{
+  font-family:'Playfair Display',serif;font-size:40px;flex-shrink:0;margin-top:2px;
+  background:linear-gradient(135deg,var(--g4),var(--g1),var(--g2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(255,216,74,0.8)) drop-shadow(0 0 50px rgba(255,216,74,0.5));
+  animation:goldPulse 3s ease-in-out infinite alternate;
+}
+.cov-text{font-size:14px;color:var(--muted);line-height:1.75;}
+.cov-text em{
+  display:block;font-style:italic;
+  font-family:'Playfair Display',serif;font-size:16px;
+  color:var(--text);margin-bottom:8px;
+  text-shadow:0 0 40px rgba(255,255,255,0.08);
+}
+.cov-text small{font-size:12px;color:var(--dim);}
+
+/* ── FOOTER ── */
+.foot{border-top:1px solid rgba(0,212,255,0.08);margin-top:52px;padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
+.foot-brand{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--dim);}
+.foot-verse{
+  font-family:'Playfair Display',serif;font-size:13px;font-style:italic;
+  color:var(--g2);text-shadow:0 0 16px rgba(255,216,74,0.4);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.hero{animation:fadeUp 0.7s ease both;}
+.filters{animation:fadeUp 0.7s 0.08s ease both;}
+.card{animation:fadeUp 0.55s ease both;}
+.card:nth-child(1){animation-delay:0.15s;}
+.card:nth-child(2){animation-delay:0.22s;}
+.card:nth-child(3){animation-delay:0.28s;}
+.card:nth-child(4){animation-delay:0.34s;}
+.card:nth-child(5){animation-delay:0.40s;}
+.card:nth-child(6){animation-delay:0.46s;}
+
+@media(max-width:480px){
+  .hero-title{font-size:52px;}
+  .ctitle{font-size:22px;}
+  .cdesc{padding-right:0;}
+  .hero-stats{gap:16px;}
+}
+</style>
+</head>
+<body>
+<div class="atmo">
+  <div class="atmo-top"></div>
+  <div class="atmo-cyan"></div>
+  <div class="atmo-teal"></div>
+  <div class="atmo-grain"></div>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="eyebrow">Sentinel OPS · Covenant Series</div>
+    <div class="hero-title">
+      <span class="t1">Covenant</span>
+      <span class="t2">Tools</span>
+    </div>
+    <div class="hero-sub">Daily and weekly instruments for JP and Ashley Campbell. Scripture anchored, AI parsed, covenant logged.</div>
+    <div class="hero-stats">
+      <div class="stat"><div class="sdot"></div><b>6</b>/6 tools live</div>
+      <div class="stat"><div class="sdot"></div>Logs to Covenant Record</div>
+      <div class="stat"><div class="sdot"></div>AI parsed</div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <button class="fbtn on" onclick="filt('all',this)">All</button>
+    <button class="fbtn" onclick="filt('jp',this)">JP</button>
+    <button class="fbtn" onclick="filt('ashley',this)">Ashley</button>
+    <button class="fbtn" onclick="filt('together',this)">Together</button>
+  </div>
+
+  <!-- JP -->
+  <div class="slabel" id="lbl-jp">⚔ JP · His Tools</div>
+  <div id="grp-jp">
+    <div class="card cc" data-p="jp" data-l="jp-launchpad.html">
+      <div class="badge live">LIVE</div>
+      <div class="ctag c">Daily · Morning</div>
+      <div class="ctitle">Morning Launchpad</div>
+      <div class="cdesc">7 soul-search prompts. Voice drop. AI parses into command categories — emotional release, spiritual, identity, relationship.</div>
+      <div class="cmeta">
+        <div class="cmi"><div class="cmi-dot c"></div>Daily</div>
+        <div class="cmi"><div class="cmi-dot c"></div>Voice or type</div>
+        <div class="cmi"><div class="cmi-dot c"></div>AI parsed</div>
+      </div>
+      <button class="cbtn cyan" onclick="go(this)">Open Tool →</button>
+    </div>
+    <div class="card cc" data-p="jp" data-l="jp-checkin.html">
+      <div class="badge live">LIVE</div>
+      <div class="ctag c">Weekly · Saturday</div>
+      <div class="ctitle">Weekly Check-In</div>
+      <div class="cdesc">7 accountability prompts. Win, fell short, God spoke, patterns, husband score, temperature, need. Coaching observation generated.</div>
+      <div class="cmeta">
+        <div class="cmi"><div class="cmi-dot c"></div>Saturday</div>
+        <div class="cmi"><div class="cmi-dot c"></div>Individual</div>
+        <div class="cmi"><div class="cmi-dot c"></div>Logs to record</div>
+      </div>
+      <button class="cbtn cyan" onclick="go(this)">Open Tool →</button>
+    </div>
+  </div>
+
+  <!-- ASHLEY -->
+  <div class="sdiv" id="lbl-ashley">
+    <div class="sdiv-line teal"></div>
+    <div class="sdiv-label">🌿 Ashley · Her Tools</div>
+    <div class="sdiv-line teal"></div>
+  </div>
+  <div id="grp-ashley">
+    <div class="card ac" data-p="ashley" data-l="ashley-launchpad.html">
+      <div class="badge live">LIVE</div>
+      <div class="ctag a">Daily · Morning</div>
+      <div class="ctitle">Morning Reflection</div>
+      <div class="cdesc">7 reflective prompts. Heart check, God's presence, fear release, marriage intention, unspoken need, invitation, true thing.</div>
+      <div class="cmeta">
+        <div class="cmi"><div class="cmi-dot a"></div>Daily</div>
+        <div class="cmi"><div class="cmi-dot a"></div>Voice or type</div>
+        <div class="cmi"><div class="cmi-dot a"></div>AI parsed</div>
+      </div>
+      <button class="cbtn teal" onclick="go(this)">Open Tool →</button>
+    </div>
+    <div class="card ac" data-p="ashley" data-l="ashley-checkin.html">
+      <div class="badge live">LIVE</div>
+      <div class="ctag a">Weekly · Saturday</div>
+      <div class="ctitle">Weekly Check-In</div>
+      <div class="cdesc">7 growth prompts. Most like herself, fell short, God spoke, patterns, covenant presence, temperature, need going forward.</div>
+      <div class="cmeta">
+        <div class="cmi"><div class="cmi-dot a"></div>Saturday</div>
+        <div class="cmi"><div class="cmi-dot a"></div>Individual</div>
+        <div class="cmi"><div class="cmi-dot a"></div>Logs to record</div>
+      </div>
+      <button class="cbtn teal" onclick="go(this)">Open Tool →</button>
+    </div>
+  </div>
+
+  <!-- TOGETHER -->
+  <div class="sdiv" id="lbl-together">
+    <div class="sdiv-line gold"></div>
+    <div class="sdiv-label">✦ Together</div>
+    <div class="sdiv-line gold"></div>
+  </div>
+  <div id="grp-together">
+    <div class="card gc" data-p="together" data-l="sunday-closing.html">
+      <div class="badge live">LIVE</div>
+      <div class="ctag g">Weekly · Sunday · Joint</div>
+      <div class="ctitle">Sunday Closing</div>
+      <div class="cdesc">4 joint prompts. Gratitude, what the week revealed, believing God for, prayer together. AI generates a Covenant Word over them.</div>
+      <div class="cmeta">
+        <div class="cmi"><div class="cmi-dot g"></div>Sunday</div>
+        <div class="cmi"><div class="cmi-dot g"></div>JP & Ashley together</div>
+        <div class="cmi"><div class="cmi-dot g"></div>Covenant Word</div>
+      </div>
+      <button class="cbtn gold" onclick="go(this)">Open Tool →</button>
+    </div>
+    <div class="card gc" data-p="together" data-l="avynn-prayer.html">
+      <div class="badge live">LIVE</div>
+      <div class="ctag g">Nightly · Together</div>
+      <div class="ctitle">Avynn's Prayer</div>
+      <div class="cdesc">Drop your hearts about Avynn — her day, what you believe over her. AI builds a customized prayer she repeats line by line with you.</div>
+      <div class="cmeta">
+        <div class="cmi"><div class="cmi-dot g"></div>Every night</div>
+        <div class="cmi"><div class="cmi-dot g"></div>JP & Ashley together</div>
+        <div class="cmi"><div class="cmi-dot g"></div>Avynn repeats</div>
+      </div>
+      <button class="cbtn gold" onclick="go(this)">Open Tool →</button>
+    </div>
+  </div>
+
+  <!-- COVENANT BAR -->
+  <div class="cov-bar">
+    <div class="cov-inner">
+      <div class="cov-mark">✦</div>
+      <div class="cov-text">
+        <em>"We chose to seek God first, take responsibility for ourselves and respond in humility instead of defensiveness."</em>
+        <small>Every entry logged to the Covenant Record.</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="foot-brand">Sentinel OPS</div>
+    <div class="foot-verse">Col 3:23</div>
+  </div>
+
+</div>
+<script>
+function go(btn){const l=btn.closest('.card').dataset.l;if(l)window.location.href=l;}
+function filt(f,btn){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.card').forEach(c=>{c.style.display=(f==='all'||c.dataset.p===f)?'block':'none';});
+  ['jp','ashley','together'].forEach(g=>{
+    const show=f==='all'||f===g;
+    const lbl=document.getElementById('lbl-'+g);
+    const grp=document.getElementById('grp-'+g);
+    if(lbl)lbl.style.display=show?'flex':'none';
+    if(grp)grp.style.display=show?'block':'none';
+  });
+}
+</script>
+</body>
+</html>

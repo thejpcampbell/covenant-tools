@@ -7,111 +7,186 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#0d1117;--surface:#111820;--surface2:#161f2b;--blue-l:#3d6fc4;--accent-b:#2a5298;--accent-glow:rgba(45,100,200,0.12);--text:#e8e4da;--muted:#7a8394;--dim:#4a5568;--line:rgba(255,255,255,0.07);--r:4px;--err:#c97a6a;}
+:root{
+  --bg:#03060c;--s1:#070d16;--s2:#0a1220;
+  --g1:#ffd84a;--g2:#f5b820;--g3:#e89a00;--g4:#ffec80;
+  --gg:rgba(255,216,74,0.15);--ggg:rgba(255,216,74,0.3);
+  --c1:#00d4ff;--c2:#00aaee;--c3:#0088cc;--c4:#80eeff;
+  --cg:rgba(0,212,255,0.12);--cgg:rgba(0,212,255,0.28);
+  --a1:#38d9c0;--a2:#20b8a0;--a3:#108878;--a4:#80ffe8;
+  --ag:rgba(56,217,192,0.12);--agg:rgba(56,217,192,0.28);
+  --text:#eef4ff;--muted:#6a7a94;--dim:#2a3548;--err:#ff5566;
+}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:18px;line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased;}
-.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;padding:0 20px 80px;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:18px;line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.atmo{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.atmo-top{position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:140%;height:60%;background:radial-gradient(ellipse at 50% 0%,rgba(255,216,74,0.12) 0%,rgba(0,212,255,0.05) 40%,transparent 65%);filter:blur(50px);}
+.atmo-l{position:absolute;top:20%;left:-15%;width:55%;height:60%;filter:blur(70px);}
+.atmo-r{position:absolute;bottom:10%;right:-10%;width:50%;height:50%;filter:blur(70px);}
+.atmo-grain{position:absolute;inset:0;opacity:0.5;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");}
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;padding:0 20px 80px;position:relative;z-index:1;}
 .screen.active{display:flex;}
-.top-nav{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;padding:24px 0 20px;border-bottom:1px solid var(--line);margin-bottom:36px;}
-.nav-brand{font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--muted);}
-.nav-back{font-size:13px;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.eyebrow{font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--blue-l);margin-bottom:10px;}
-.display-h{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;line-height:1.1;}
 .wrap{width:100%;max-width:500px;}
-.pin-wrap{display:flex;flex-direction:column;align-items:center;padding-top:60px;width:100%;max-width:340px;}
-.pin-dots{display:flex;gap:18px;margin:32px 0 8px;}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--accent-b);transition:all 0.15s;}
-.pin-dot.filled{background:var(--blue-l);border-color:var(--blue-l);}
-.pin-err{font-size:14px;color:var(--err);text-align:center;height:22px;margin-bottom:16px;}
+.top-nav{width:100%;max-width:500px;display:flex;align-items:center;justify-content:space-between;padding:24px 0 20px;margin-bottom:32px;border-bottom:1px solid;}
+.nav-brand{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;}
+.nav-back{font-size:13px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color 0.2s;}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;}
+.display-h{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;line-height:1.05;}
+.display-h em{font-style:italic;}
+/* PIN */
+.pin-wrap{display:flex;flex-direction:column;align-items:center;padding-top:56px;width:100%;max-width:340px;}
+.pin-dots{display:flex;gap:18px;margin:28px 0 8px;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid;transition:all 0.2s;}
+.pin-err{font-size:14px;color:var(--err);text-align:center;height:22px;margin-bottom:14px;}
 .pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;}
-.pin-key{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 0;font-family:'Playfair Display',serif;font-size:24px;color:var(--text);cursor:pointer;text-align:center;transition:all 0.12s;-webkit-tap-highlight-color:transparent;user-select:none;}
-.pin-key:active{background:var(--accent-glow);border-color:var(--accent-b);transform:scale(0.95);}
-.scripture-card{border:1px solid var(--accent-b);border-radius:var(--r);padding:24px;margin-bottom:24px;background:var(--surface);}
-.scripture-eyebrow{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--blue-l);margin-bottom:14px;}
-.scripture-verse{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;line-height:1.75;color:var(--text);margin-bottom:14px;}
-.scripture-ref{font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.prompt-panel{background:var(--surface2);border:1px solid var(--accent-b);border-radius:var(--r);padding:20px;margin-bottom:6px;}
-.prompt-panel-label{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--blue-l);margin-bottom:14px;}
-.prompt-list{display:flex;flex-direction:column;gap:12px;}
+.pin-key{background:var(--s1);border:1px solid rgba(255,255,255,0.06);border-radius:4px;padding:22px 0;font-family:'Playfair Display',serif;font-size:24px;color:var(--text);cursor:pointer;text-align:center;transition:all 0.12s;-webkit-tap-highlight-color:transparent;user-select:none;}
+/* SCRIPTURE */
+.sc-card{border-radius:4px;padding:22px;margin-bottom:22px;}
+.sc-label{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;}
+.sc-verse{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;line-height:1.75;margin-bottom:12px;}
+.sc-ref{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+/* PROMPT PANEL */
+.prompt-panel{background:var(--s2);border-radius:4px;padding:20px;margin-bottom:6px;}
+.prompt-label{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;}
+.prompt-list{display:flex;flex-direction:column;gap:11px;}
 .prompt-item{display:flex;align-items:flex-start;gap:12px;font-size:17px;line-height:1.6;color:var(--muted);}
-.prompt-num{flex-shrink:0;width:24px;height:24px;border:1px solid var(--accent-b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--blue-l);margin-top:2px;}
-.input-block{margin:24px 0 0;}
-.input-label{display:block;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
-.drop-area{width:100%;background:var(--surface);border:1px solid var(--accent-b);border-radius:var(--r);padding:20px;min-height:160px;color:var(--text);font-family:'Barlow',sans-serif;font-size:18px;line-height:1.7;resize:vertical;transition:border-color 0.2s;-webkit-appearance:none;}
-.drop-area:focus{outline:none;border-color:var(--blue-l);}
+.prompt-num{flex-shrink:0;width:24px;height:24px;border:1px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:2px;}
+/* INPUT */
+.input-block{margin:22px 0 0;}
+.input-label{display:block;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:11px;}
+.drop-area{width:100%;background:var(--s1);border-radius:4px;padding:20px;min-height:160px;color:var(--text);font-family:'Barlow',sans-serif;font-size:18px;line-height:1.7;resize:vertical;-webkit-appearance:none;transition:border-color 0.2s;border:1px solid;}
 .drop-area::placeholder{color:var(--dim);}
-.mic-row{display:flex;gap:10px;margin-top:12px;}
-.mic-btn{flex:1;padding:16px;background:var(--surface2);border:1px solid var(--accent-b);border-radius:var(--r);font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
-.mic-btn.recording{background:var(--accent-glow);border-color:var(--blue-l);color:var(--blue-l);animation:pulse 1.5s infinite;}
+.mic-row{margin-top:11px;}
+.mic-btn{width:100%;padding:15px;border-radius:4px;font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;-webkit-tap-highlight-color:transparent;border:1px solid;}
+.mic-btn.recording{animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-.btn{width:100%;padding:20px;border-radius:var(--r);border:none;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.18s;-webkit-tap-highlight-color:transparent;margin-top:12px;}
-.btn-primary{background:var(--accent-b);color:var(--text);}
-.btn-primary:active{transform:scale(0.98);}
-.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:12px;padding:16px;}
+/* BUTTONS */
+.btn{width:100%;padding:18px;border-radius:3px;border:none;font-family:'Barlow',sans-serif;font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.22s;-webkit-tap-highlight-color:transparent;margin-top:11px;position:relative;overflow:hidden;}
+.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transform:translateX(-100%);transition:transform 0.5s;}
+.btn:hover::after{transform:translateX(100%);}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.07);color:var(--muted);font-size:12px;padding:14px;}
+/* LOADING */
 .loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px;}
 .loading-title{font-family:'Playfair Display',serif;font-size:24px;font-style:italic;color:var(--muted);}
 .loading-dots{display:flex;gap:8px;}
-.loading-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-b);animation:ldot 1.4s infinite;}
+.loading-dot{width:8px;height:8px;border-radius:50%;animation:ldot 1.4s infinite;}
 .loading-dot:nth-child(2){animation-delay:0.2s;}
 .loading-dot:nth-child(3){animation-delay:0.4s;}
 @keyframes ldot{0%,80%,100%{transform:scale(0.6);opacity:0.3;}40%{transform:scale(1);opacity:1;}}
-.category-card{border:1px solid var(--accent-b);border-radius:var(--r);margin-bottom:16px;overflow:hidden;background:var(--surface);}
-.cat-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;}
+/* PARSED */
+.cat-card{border-radius:4px;margin-bottom:14px;overflow:hidden;background:var(--s1);}
+.cat-head{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:10px;}
 .cat-icon{font-size:18px;}
-.cat-label{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--blue-l);}
+.cat-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;}
 .cat-body{padding:20px;font-size:18px;line-height:1.75;color:var(--text);}
 .cat-body.empty{color:var(--dim);font-style:italic;font-size:16px;}
-.cat-body.declaration{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;}
-.yaml-toggle{font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--dim);cursor:pointer;margin-bottom:12px;display:block;}
-.yaml-block{background:var(--surface2);border:1px solid var(--line);border-radius:var(--r);padding:20px;font-family:monospace;font-size:13px;line-height:1.8;color:var(--muted);white-space:pre-wrap;word-break:break-word;display:none;margin-bottom:16px;}
+.cat-body.decl{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;}
+.yaml-toggle{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);cursor:pointer;margin-bottom:11px;display:block;}
+.yaml-block{background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:4px;padding:18px;font-family:monospace;font-size:13px;line-height:1.8;color:var(--muted);white-space:pre-wrap;word-break:break-word;display:none;margin-bottom:14px;}
+/* SUCCESS */
 .success-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:0 20px;}
-.success-mark{font-family:'Playfair Display',serif;font-size:64px;color:var(--blue-l);margin-bottom:24px;}
-.success-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;margin-bottom:10px;}
+.success-mark{font-family:'Playfair Display',serif;font-size:68px;margin-bottom:22px;filter:drop-shadow(0 0 30px currentColor);}
+.success-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;margin-bottom:10px;}
 .success-text{font-size:17px;color:var(--muted);max-width:280px;margin:0 auto 40px;}
-@media(max-width:375px){.display-h{font-size:34px;}.drop-area,.cat-body{font-size:17px;}}
-</style>
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.screen.active .wrap,.screen.active .pin-wrap,.screen.active .loading-wrap,.screen.active .success-wrap{animation:fadeUp 0.5s ease both;}
+@media(max-width:375px){.display-h{font-size:36px;}.drop-area,.cat-body{font-size:17px;}}
+
+  --accent:#00d4ff;--accent2:#00aaee;--glow:rgba(0,212,255,0.12);--glow2:rgba(0,212,255,0.28);
+.pin-dot.filled{background:var(--c1);border-color:var(--c2);box-shadow:0 0 12px rgba(0,212,255,0.28),0 0 24px rgba(0,212,255,0.12);}
+.cat-card{border:1px solid rgba(0,212,255,0.15);}
+.cat-card:hover{border-color:rgba(0,212,255,0.4);}
+.cat-head{border-color:rgba(0,212,255,0.1);}
+.cat-label{color:#00d4ff;text-shadow:0 0 12px rgba(0,212,255,0.28);}
+
+.btn-primary{
+  background:linear-gradient(135deg,#002840,#0066aa 40%,#00d4ff);
+  color:#03060c;
+  box-shadow:0 4px 24px rgba(0,212,255,0.4),0 0 50px rgba(0,212,255,0.12),inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.btn-primary:hover{
+  box-shadow:0 6px 40px rgba(0,212,255,0.4),0 0 80px rgba(0,212,255,0.28),inset 0 1px 0 rgba(255,255,255,0.35);
+  transform:translateY(-2px);
+}
+
+.mic-btn{background:var(--s2);border-color:rgba(0,212,255,0.2);color:var(--text);}
+.mic-btn.recording{background:rgba(0,212,255,0.12);border-color:rgba(0,212,255,0.5);color:#00d4ff;box-shadow:0 0 20px rgba(0,212,255,0.28);}
+
+.drop-area{border-color:rgba(0,212,255,0.2);}
+.drop-area:focus{border-color:rgba(0,212,255,0.6);box-shadow:0 0 20px rgba(0,212,255,0.12);}
+
+.sc-card{background:var(--s1);border:1px solid rgba(0,212,255,0.2);box-shadow:inset 0 0 30px rgba(0,212,255,0.12);}
+.sc-label{color:#00d4ff;text-shadow:0 0 12px rgba(0,212,255,0.28);}
+
+.prompt-panel{border:1px solid rgba(0,212,255,0.15);}
+.prompt-label{color:#00d4ff;text-shadow:0 0 12px rgba(0,212,255,0.28);}
+.prompt-num{border-color:rgba(0,212,255,0.3);color:#00d4ff;}
+
+.top-nav{border-color:rgba(0,212,255,0.15);}
+.nav-brand{color:#00d4ff;text-shadow:0 0 16px rgba(0,212,255,0.28);}
+.nav-back{color:var(--muted);}
+.nav-back:hover{color:#00d4ff;}
+.loading-dot{background:#00d4ff;}.success-mark{color:var(--c1);}.yaml-toggle{color:var(--dim);}.yaml-toggle:hover{color:#00d4ff;}</style>
 </head>
 <body>
-
+<div class="atmo">
+  <div class="atmo-top"></div>
+  <div class="atmo-l" style="background:radial-gradient(ellipse,rgba(0,212,255,0.1) 0%,transparent 60%);"></div>
+  <div class="atmo-r" style="background:radial-gradient(ellipse,rgba(0,150,200,0.06) 0%,transparent 60%);"></div>
+  <div class="atmo-grain"></div>
+</div>
 <div id="s-pin" class="screen active">
-  <div class="top-nav"><div class="nav-brand">JP · Weekly Check-In</div></div>
+  <div class="top-nav" style="border-color:rgba(0,212,255,0.1);">
+    <div class="nav-brand" style="color:#00d4ff;">JP · Weekly Check-In</div>
+  </div>
   <div class="pin-wrap">
-    <div class="eyebrow">Enter PIN</div>
-    <div class="display-h" style="margin-bottom:0">Weekly<br><em>Check-In</em></div>
-    <div class="pin-dots"><div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div><div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div></div>
+    <div class="eyebrow" style="color:#00d4ff;text-shadow:0 0 20px rgba(0,212,255,0.28);">Saturday · Check-In</div>
+    <div class="display-h" style="margin-bottom:0;text-shadow:0 0 40px rgba(0,212,255,0.12);">Your week,<br><em>examined.</em></div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="d0" style="border-color:rgba(0,212,255,0.3);"></div>
+      <div class="pin-dot" id="d1" style="border-color:rgba(0,212,255,0.3);"></div>
+      <div class="pin-dot" id="d2" style="border-color:rgba(0,212,255,0.3);"></div>
+      <div class="pin-dot" id="d3" style="border-color:rgba(0,212,255,0.3);"></div>
+    </div>
     <div class="pin-err" id="pin-err"></div>
     <div class="pin-keypad">
-      <div class="pin-key" onclick="pp('1')">1</div><div class="pin-key" onclick="pp('2')">2</div><div class="pin-key" onclick="pp('3')">3</div>
-      <div class="pin-key" onclick="pp('4')">4</div><div class="pin-key" onclick="pp('5')">5</div><div class="pin-key" onclick="pp('6')">6</div>
-      <div class="pin-key" onclick="pp('7')">7</div><div class="pin-key" onclick="pp('8')">8</div><div class="pin-key" onclick="pp('9')">9</div>
-      <div class="pin-key" style="color:var(--muted);font-size:18px" onclick="pc()">✕</div>
-      <div class="pin-key" onclick="pp('0')">0</div>
-      <div class="pin-key" style="color:var(--muted);font-size:16px" onclick="pb()">⌫</div>
+      <div class="pin-key" onclick="pp('1')" style="border-color:rgba(0,212,255,0.1);">1</div>
+      <div class="pin-key" onclick="pp('2')" style="border-color:rgba(0,212,255,0.1);">2</div>
+      <div class="pin-key" onclick="pp('3')" style="border-color:rgba(0,212,255,0.1);">3</div>
+      <div class="pin-key" onclick="pp('4')" style="border-color:rgba(0,212,255,0.1);">4</div>
+      <div class="pin-key" onclick="pp('5')" style="border-color:rgba(0,212,255,0.1);">5</div>
+      <div class="pin-key" onclick="pp('6')" style="border-color:rgba(0,212,255,0.1);">6</div>
+      <div class="pin-key" onclick="pp('7')" style="border-color:rgba(0,212,255,0.1);">7</div>
+      <div class="pin-key" onclick="pp('8')" style="border-color:rgba(0,212,255,0.1);">8</div>
+      <div class="pin-key" onclick="pp('9')" style="border-color:rgba(0,212,255,0.1);">9</div>
+      <div class="pin-key" onclick="pc()" style="border-color:rgba(0,212,255,0.1);color:var(--muted);font-size:18px;">✕</div>
+      <div class="pin-key" onclick="pp('0')" style="border-color:rgba(0,212,255,0.1);">0</div>
+      <div class="pin-key" onclick="pb()" style="border-color:rgba(0,212,255,0.1);color:var(--muted);font-size:16px;">⌫</div>
     </div>
   </div>
 </div>
-
 <div id="s-drop" class="screen">
-  <div class="top-nav"><div class="nav-brand">JP · Weekly Check-In</div><div class="nav-back" onclick="go('s-pin')">Sign out</div></div>
+  <div class="top-nav">
+    <div class="nav-brand">JP · Weekly Check-In</div>
+    <div class="nav-back" onclick="go('s-pin')">Sign out</div>
+  </div>
   <div class="wrap">
-    <div class="eyebrow" id="drop-date"></div>
-    <div class="display-h" style="margin-bottom:28px">Weekly<br><em>Check-In</em></div>
-    <div class="scripture-card">
-      <div class="scripture-eyebrow">Today's Scripture</div>
-      <div class="scripture-verse" id="sc-verse"></div>
-      <div class="scripture-ref" id="sc-ref"></div>
+    <div class="eyebrow" id="drop-date" style="color:#00d4ff;text-shadow:0 0 16px rgba(0,212,255,0.28);"></div>
+    <div class="display-h" style="margin-bottom:26px;">Weekly<br><em>Check-In</em></div>
+    <div class="sc-card">
+      <div class="sc-label">Today's Scripture</div>
+      <div class="sc-verse" id="sc-verse"></div>
+      <div class="sc-ref" id="sc-ref"></div>
     </div>
     <div class="prompt-panel">
-      <div class="prompt-panel-label">Speak through each of these</div>
-      <div class="prompt-list">
-        <div class="prompt-item"><span class="prompt-num">1</span>What was your win this week — in the covenant, in yourself, or in your work?</div>
+      <div class="prompt-label">Speak through each of these</div>
+      <div class="prompt-list"><div class="prompt-item"><span class="prompt-num">1</span>What was your win this week — in the covenant, in yourself, or in your work?</div>
 <div class="prompt-item"><span class="prompt-num">2</span>Where did you fall short — and did you own it or hide from it?</div>
 <div class="prompt-item"><span class="prompt-num">3</span>What did God say to you this week — through scripture, circumstance, or silence?</div>
 <div class="prompt-item"><span class="prompt-num">4</span>Where did fear, pride, or avoidance show up in you?</div>
 <div class="prompt-item"><span class="prompt-num">5</span>How did you show up for Ashley — and where did you come up short as a husband?</div>
 <div class="prompt-item"><span class="prompt-num">6</span>Emotional temperature — what's the number and the honest story behind it?</div>
-<div class="prompt-item"><span class="prompt-num">7</span>What do you need going into next week — from Ashley, God, or yourself?</div>
-      </div>
+<div class="prompt-item"><span class="prompt-num">7</span>What do you need going into next week — from Ashley, God, or yourself?</div></div>
     </div>
     <div class="input-block">
       <span class="input-label">Your Drop</span>
@@ -124,19 +199,20 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
     <button class="btn btn-ghost" onclick="document.getElementById('lp-drop').value=''">Clear</button>
   </div>
 </div>
-
 <div id="s-loading" class="screen">
   <div class="loading-wrap">
     <div class="loading-title"><em>Reading your week...</em></div>
     <div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
   </div>
 </div>
-
 <div id="s-parsed" class="screen">
-  <div class="top-nav"><div class="nav-brand">Parsed</div><div class="nav-back" onclick="go('s-drop')">← Redo</div></div>
+  <div class="top-nav">
+    <div class="nav-brand">Parsed</div>
+    <div class="nav-back" onclick="go('s-drop')">← Redo</div>
+  </div>
   <div class="wrap">
-    <div class="eyebrow">Organized</div>
-    <div class="display-h" style="margin-bottom:28px">Weekly,<br><em>Organized.</em></div>
+    <div class="eyebrow" style="color:#00d4ff;text-shadow:0 0 16px rgba(0,212,255,0.28);">Organized</div>
+    <div class="display-h" style="margin-bottom:26px;">Weekly,<br><em>Organized.</em></div>
     <div id="parsed-cards"></div>
     <span class="yaml-toggle" onclick="toggleYaml()">[ Export YAML ]</span>
     <div class="yaml-block" id="yaml-out"></div>
@@ -144,7 +220,6 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
     <button class="btn btn-ghost" onclick="go('s-drop')">← Edit Drop</button>
   </div>
 </div>
-
 <div id="s-success" class="screen">
   <div class="success-wrap">
     <div class="success-mark">✦</div>
@@ -153,92 +228,88 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
     <button class="btn btn-primary" style="max-width:320px" onclick="reset()">New Drop →</button>
   </div>
 </div>
-
 <script>
+
 const PIN='0915';
 const SHEETS='https://script.google.com/macros/s/AKfycbyUhRHbrxMdsG6VGCdKglVzrqUBJO000-2h19UqX8kkAeULOCKc1FmahKqwG08IPdx-mA/exec';
-const TOOL='jp_checkin';
-const PROMPTS=['What was your win this week — in the covenant, in yourself, or in your work?', 'Where did you fall short — and did you own it or hide from it?', 'What did God say to you this week — through scripture, circumstance, or silence?', 'Where did fear, pride, or avoidance show up in you?', 'How did you show up for Ashley — and where did you come up short as a husband?', "Emotional temperature — what's the number and the honest story behind it?", 'What do you need going into next week — from Ashley, God, or yourself?'];
-const SCRIPTURES=[{ref:'Genesis 2:24',text:"A man shall leave his father and his mother and hold fast to his wife, and they shall become one flesh."},{ref:'Colossians 3:23',text:"Whatever you do, work heartily, as for the Lord and not for men."},{ref:'Colossians 3:14',text:"Above all these put on love, which binds everything together in perfect harmony."},{ref:'Joshua 1:9',text:"Be strong and courageous. Do not be frightened, and do not be dismayed, for the Lord your God is with you wherever you go."},{ref:'Ephesians 5:25',text:"Husbands, love your wives, as Christ loved the church and gave himself up for her."},{ref:'Proverbs 3:5-6',text:"Trust in the Lord with all your heart, and do not lean on your own understanding. In all your ways acknowledge him, and he will make straight your paths."},{ref:'Galatians 2:20',text:"I have been crucified with Christ. It is no longer I who live, but Christ who lives in me."},{ref:'Romans 8:28',text:"For those who love God all things work together for good, for those who are called according to his purpose."},{ref:'2 Timothy 1:7',text:"God gave us a spirit not of fear but of power and love and self-control."},{ref:'Philippians 4:13',text:"I can do all things through him who strengthens me."},{ref:'Psalm 51:10',text:"Create in me a clean heart, O God, and renew a right spirit within me."},{ref:'Isaiah 40:31',text:"They who wait for the Lord shall renew their strength; they shall mount up with wings like eagles."},{ref:'Romans 12:2',text:"Do not be conformed to this world, but be transformed by the renewal of your mind."},{ref:'Joel 2:25',text:"I will restore to you the years that the swarming locust has eaten."},{ref:'Lamentations 3:22-23',text:"The steadfast love of the Lord never ceases; his mercies never come to an end; they are new every morning."},{ref:'Psalm 34:18',text:"The Lord is near to the brokenhearted and saves the crushed in spirit."},{ref:'Isaiah 43:2',text:"When you pass through the waters, I will be with you; and through the rivers, they shall not overwhelm you."},{ref:'Micah 7:18',text:"Who is a God like you, pardoning iniquity? He delights in steadfast love."},{ref:'Zechariah 4:6',text:"Not by might, nor by power, but by my Spirit, says the Lord of hosts."},{ref:'Psalm 23:3',text:"He restores my soul. He leads me in paths of righteousness for his name's sake."},{ref:'Matthew 19:6',text:"What therefore God has joined together, let not man separate."},{ref:'1 Corinthians 13:4-7',text:"Love is patient and kind; love does not envy or boast; it is not arrogant or rude. It does not insist on its own way."},{ref:'Romans 5:8',text:"God shows his love for us in that while we were still sinners, Christ died for us."},{ref:'Hebrews 10:24',text:"Let us consider how to stir up one another to love and good works."},{ref:'Isaiah 61:3',text:"To give them a beautiful headdress instead of ashes, the oil of gladness instead of mourning."},{ref:'Psalm 46:1',text:"God is our refuge and strength, a very present help in trouble."},{ref:'Jeremiah 29:11',text:"For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope."},{ref:'1 John 4:19',text:"We love because he first loved us."},{ref:'Romans 15:13',text:"May the God of hope fill you with all joy and peace in believing."},{ref:'2 Chronicles 7:14',text:"If my people who are called by my name humble themselves, and pray and seek my face, then I will hear from heaven and will forgive their sin and heal their land."}];
-
-let pin='',rec=null,isRec=false,parsedData=null,rawDrop='',sc=null;
-
+const SC=[{r:'Genesis 2:24',t:"A man shall leave his father and his mother and hold fast to his wife, and they shall become one flesh."},{r:'Colossians 3:23',t:"Whatever you do, work heartily, as for the Lord and not for men."},{r:'Colossians 3:14',t:"Above all these put on love, which binds everything together in perfect harmony."},{r:'Joshua 1:9',t:"Be strong and courageous. Do not be frightened, and do not be dismayed, for the Lord your God is with you wherever you go."},{r:'Ephesians 5:25',t:"Husbands, love your wives, as Christ loved the church and gave himself up for her."},{r:'Proverbs 3:5-6',t:"Trust in the Lord with all your heart, and do not lean on your own understanding. In all your ways acknowledge him."},{r:'Galatians 2:20',t:"I have been crucified with Christ. It is no longer I who live, but Christ who lives in me."},{r:'Romans 8:28',t:"For those who love God all things work together for good."},{r:'2 Timothy 1:7',t:"God gave us a spirit not of fear but of power and love and self-control."},{r:'Philippians 4:13',t:"I can do all things through him who strengthens me."},{r:'Psalm 51:10',t:"Create in me a clean heart, O God, and renew a right spirit within me."},{r:'Isaiah 40:31',t:"They who wait for the Lord shall renew their strength; they shall mount up with wings like eagles."},{r:'Romans 12:2',t:"Do not be conformed to this world, but be transformed by the renewal of your mind."},{r:'Joel 2:25',t:"I will restore to you the years that the swarming locust has eaten."},{r:'Lamentations 3:22-23',t:"The steadfast love of the Lord never ceases; his mercies never come to an end; they are new every morning."},{r:'Psalm 34:18',t:"The Lord is near to the brokenhearted and saves the crushed in spirit."},{r:'Isaiah 43:2',t:"When you pass through the waters, I will be with you; and through the rivers, they shall not overwhelm you."},{r:'Micah 7:18',t:"Who is a God like you, pardoning iniquity? He delights in steadfast love."},{r:'Zechariah 4:6',t:"Not by might, nor by power, but by my Spirit, says the Lord of hosts."},{r:'Psalm 23:3',t:"He restores my soul. He leads me in paths of righteousness for his name's sake."},{r:'Matthew 19:6',t:"What therefore God has joined together, let not man separate."},{r:'1 Corinthians 13:4-7',t:"Love is patient and kind; love does not envy or boast; it is not arrogant or rude. It does not insist on its own way."},{r:'Romans 5:8',t:"God shows his love for us in that while we were still sinners, Christ died for us."},{r:'Hebrews 10:24',t:"Let us consider how to stir up one another to love and good works."},{r:'Isaiah 61:3',t:"To give them a beautiful headdress instead of ashes, the oil of gladness instead of mourning."},{r:'Psalm 46:1',t:"God is our refuge and strength, a very present help in trouble."},{r:'Jeremiah 29:11',t:"For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope."},{r:'1 John 4:19',t:"We love because he first loved us."},{r:'Romans 15:13',t:"May the God of hope fill you with all joy and peace in believing."},{r:'2 Chronicles 7:14',t:"If my people who are called by my name humble themselves, and pray and seek my face, then I will hear from heaven and forgive their sin and heal their land."},{r:'Psalm 4:8',t:"In peace I will lie down and sleep, for you alone, Lord, make me dwell in safety."},{r:'Psalm 91:11',t:"For he will command his angels concerning you to guard you in all your ways."},{r:'Psalm 139:14',t:"I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well."},{r:'Isaiah 43:1',t:"Do not fear, for I have redeemed you; I have summoned you by name; you are mine."},{r:'Zephaniah 3:17',t:"The Lord your God is in your midst; he will rejoice over you with gladness; he will quiet you by his love."}];
+let pin='',rec=null,isRec=false,pd=null,raw='',sc=null;
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
-function reset(){document.getElementById('lp-drop').value='';parsedData=null;rawDrop='';go('s-drop');}
-function pp(d){if(pin.length>=4)return;pin+=d;updateDots();if(pin.length===4)checkPin();}
-function pb(){pin=pin.slice(0,-1);updateDots();document.getElementById('pin-err').textContent='';}
-function pc(){pin='';updateDots();document.getElementById('pin-err').textContent='';}
-function updateDots(){for(let i=0;i<4;i++)document.getElementById(`d${i}`).classList.toggle('filled',i<pin.length);}
-function checkPin(){if(pin===PIN){initDrop();}else{document.getElementById('pin-err').textContent='Incorrect. Try again.';setTimeout(()=>{pin='';updateDots();document.getElementById('pin-err').textContent='';},1400);}}
+function reset(){document.getElementById('lp-drop').value='';pd=null;raw='';go('s-drop');}
+function pp(d){if(pin.length>=4)return;pin+=d;udots();if(pin.length===4)chkPin();}
+function pb(){pin=pin.slice(0,-1);udots();document.getElementById('pin-err').textContent='';}
+function pc(){pin='';udots();document.getElementById('pin-err').textContent='';}
+function udots(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('filled',i<pin.length);}
+function chkPin(){
+  if(pin===PIN){initDrop();}
+  else{document.getElementById('pin-err').textContent='Incorrect. Try again.';setTimeout(()=>{pin='';udots();document.getElementById('pin-err').textContent='';},1400);}
+}
 function initDrop(){
   const n=new Date();
   document.getElementById('drop-date').textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  sc=SCRIPTURES[Math.floor(Math.random()*SCRIPTURES.length)];
-  document.getElementById('sc-verse').textContent=`"${sc.text}"`;
-  document.getElementById('sc-ref').textContent=`${sc.ref} · ESV`;
+  sc=SC[Math.floor(Math.random()*SC.length)];
+  document.getElementById('sc-verse').textContent='"'+sc.t+'"';
+  document.getElementById('sc-ref').textContent=sc.r+' · ESV';
   go('s-drop');
 }
 function toggleMic(){if(!('SpeechRecognition' in window||'webkitSpeechRecognition' in window)){alert('Speech recognition unavailable. Please type.');return;}isRec?stopMic():startMic();}
-function startMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang='en-US';const ta=document.getElementById('lp-drop');let base=ta.value;rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)base+=e.results[i][0].transcript+' ';else interim+=e.results[i][0].transcript;}ta.value=base+interim;};rec.onerror=()=>stopMic();rec.onend=()=>stopMic();rec.start();isRec=true;document.getElementById('mic-btn').classList.add('recording');document.getElementById('mic-icon').textContent='⏹';document.getElementById('mic-label').textContent='Recording — Tap to Stop';}
+function startMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang='en-US';
+  const ta=document.getElementById('lp-drop');let base=ta.value;
+  rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)base+=e.results[i][0].transcript+' ';else interim+=e.results[i][0].transcript;}ta.value=base+interim;};
+  rec.onerror=()=>stopMic();rec.onend=()=>stopMic();rec.start();isRec=true;
+  document.getElementById('mic-btn').classList.add('recording');
+  document.getElementById('mic-icon').textContent='⏹';document.getElementById('mic-label').textContent='Recording — Tap to Stop';
+}
 function stopMic(){if(rec)rec.stop();isRec=false;document.getElementById('mic-btn').classList.remove('recording');document.getElementById('mic-icon').textContent='🎙';document.getElementById('mic-label').textContent='Tap to Speak';}
+
+const PROMPTS=['What was your win this week — in the covenant, in yourself, or in your work?', 'Where did you fall short — and did you own it or hide from it?', 'What did God say to you this week — through scripture, circumstance, or silence?', 'Where did fear, pride, or avoidance show up in you?', 'How did you show up for Ashley — and where did you come up short as a husband?', "Emotional temperature — what's the number and the honest story behind it?", 'What do you need going into next week — from Ashley, God, or yourself?'];
 
 async function parseDrop(){
   const drop=document.getElementById('lp-drop').value.trim();
   if(!drop){alert('Drop something first.');return;}
-  rawDrop=drop;go('s-loading');
+  raw=drop;go('s-loading');
   const today=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   try{
-    const resp=await fetch('/api/parse',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({tool:TOOL,drop,scripture:sc,date:today,prompts:PROMPTS})
-    });
+    const resp=await fetch('/api/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'jp_checkin',drop,scripture:sc,date:today,prompts:PROMPTS})});
     const result=await resp.json();
     if(!result.success)throw new Error(result.error||'Parse failed');
-    parsedData=result.data;
-    renderParsed();go('s-parsed');
+    pd=result.data;renderParsed();go('s-parsed');
   }catch(err){
     console.error(err);
-    parsedData={coaching_observation:'Drop received. Parse failed: '+err.message+'. Try dropping again — the more you say, the better the parse.',emotional_release:'',spiritual:'',identity_declaration_category:'',personal_relationship:'',declaration:'',scripture_mention:'',heart_check:'',what_god_is_speaking:'',relationship_pulse:'',who_i_am_becoming:'',what_i_am_releasing:'',ci_win:'',ci_fell_short:'',ci_god_spoke:'',ci_pattern:'',ci_husband:'',ci_covenant:'',ci_temp:'',ci_temp_note:'',ci_need:''};
+    pd={coaching_observation:'Drop received. Parse failed: '+err.message+'. Try again.',declaration:'',emotional_release:'',spiritual:'',identity_declaration_category:'',personal_relationship:'',heart_check:'',what_god_is_speaking:'',relationship_pulse:'',who_i_am_becoming:'',what_i_am_releasing:'',ci_win:'',ci_fell_short:'',ci_god_spoke:'',ci_pattern:'',ci_husband:'',ci_covenant:'',ci_temp:'',ci_temp_note:'',ci_need:'',scripture_mention:''};
     renderParsed();go('s-parsed');
   }
 }
-
+function mkCard(ic,lb,ct,cls){return '<div class="cat-card"><div class="cat-head"><span class="cat-icon">'+ic+'</span><span class="cat-label">'+lb+'</span></div><div class="cat-body'+(ct?'':' empty')+(cls?' '+cls:'')+'>'+(ct||'Nothing captured here.')+'</div></div>';}
 function renderParsed(){
-  const d=parsedData;
-  const mkCard=(ic,lb,ct,cls='')=>`<div class="category-card"><div class="cat-head"><span class="cat-icon">${ic}</span><span class="cat-label">${lb}</span></div><div class="cat-body${ct?'':' empty'}${cls?' '+cls:''}">${ct||'Nothing captured here.'}</div></div>`;
-  let html='';
-  if(d.coaching_observation)html+=mkCard('◆','Coaching Observation',d.coaching_observation,'');
-  if(d.declaration)html+=mkCard('📣','Declaration',d.declaration,'declaration');
+  const d=pd;let html='';
+  html+=mkCard('◆','Coaching Observation',d.coaching_observation||'','');
+  if(d.declaration)html+=mkCard('📣','Declaration',d.declaration,'decl');
   html+=mkCard('🏆','Win This Week',d.ci_win||'','');
   html+=mkCard('🎯','Where I Fell Short',d.ci_fell_short||'','');
   html+=mkCard('✝','What God Spoke',d.ci_god_spoke||'','');
   html+=mkCard('🔍','Pattern That Surfaced',d.ci_pattern||'','');
   html+=mkCard('💛','How I Showed Up as Husband',d.ci_husband||'','');
-  if(d.ci_temp)html+=mkCard('🌡','Emotional Temperature',d.ci_temp+'/10 — '+(d.ci_temp_note||''));
+  if(d.ci_temp)html+=mkCard('🌡','Emotional Temperature',d.ci_temp+'/10 — '+(d.ci_temp_note||''),'');
   html+=mkCard('🔑','Need Going Into Next Week',d.ci_need||'','');
   
   document.getElementById('parsed-cards').innerHTML=html;
-  let yaml='drop:\n  date: "'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'"\n';
-  yaml+='  tool: "'+TOOL+'"\n';
-  yaml+='  scripture:\n    ref: "'+sc.ref+'"\n    text: "'+sc.text+'"\n';
-  yaml+='  raw_drop: |\n    '+rawDrop.replace(/\n/g,'\n    ')+'\n';
+  let yaml='drop:\n  tool: "jp_checkin"\n  date: "'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'"\n';
+  yaml+='  scripture:\n    ref: "'+sc.r+'"\n    text: "'+sc.t+'"\n';
+  yaml+='  raw_drop: |\n    '+raw.replace(/\n/g,'\n    ')+'\n';
   Object.entries(d).forEach(([k,v])=>{if(v)yaml+='  '+k+': "'+String(v).replace(/"/g,'\\"')+'"\n';});
   document.getElementById('yaml-out').textContent=yaml;
 }
-
 function toggleYaml(){const el=document.getElementById('yaml-out');el.style.display=el.style.display==='block'?'none':'block';}
-
 async function submitDrop(){
-  const d=parsedData||{};
-  const payload={timestamp:new Date().toISOString(),date:new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),scripture_ref:sc.ref,scripture_text:sc.text,type:'JP_CHECKIN',raw_drop:rawDrop,declaration:d.declaration||'',coaching_observation:d.coaching_observation||'',ci_win:d.ci_win||'',ci_fell_short:d.ci_fell_short||'',ci_god_spoke:d.ci_god_spoke||'',ci_pattern:d.ci_pattern||'',ci_husband:d.ci_husband||'',ci_temp:d.ci_temp||'',ci_temp_note:d.ci_temp_note||'',ci_need:d.ci_need||''};
-  try{
-    const r=await fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    const result=await r.json();
-    console.log('Sheets response:',result);
-  }catch(e){console.error('Log error:',e);}
+  const d=pd||{};
+  const payload={timestamp:new Date().toISOString(),date:new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),scripture_ref:sc.r,scripture_text:sc.t,raw_drop:raw,type:'JP_CHECKIN',declaration:d.declaration||'',coaching_observation:d.coaching_observation||'',ci_win:d.ci_win||'',ci_fell_short:d.ci_fell_short||'',ci_god_spoke:d.ci_god_spoke||'',ci_pattern:d.ci_pattern||'',ci_husband:d.ci_husband||'',ci_temp:d.ci_temp||'',ci_temp_note:d.ci_temp_note||'',ci_need:d.ci_need||''};
+  try{await fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.error(e);}
   go('s-success');
 }
+
 </script>
 </body>
 </html>
