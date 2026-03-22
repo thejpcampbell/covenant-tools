@@ -208,7 +208,7 @@ function renderParsed(){
   const d=parsedData;
   const mkCard=(ic,lb,ct,cls='')=>`<div class="category-card"><div class="cat-head"><span class="cat-icon">${ic}</span><span class="cat-label">${lb}</span></div><div class="cat-body${ct?'':' empty'}${cls?' '+cls:''}">${ct||'Nothing captured here.'}</div></div>`;
   let html='';
-  if(d.coaching_observation)html+=mkCard('✨','Today's Invitation',d.coaching_observation,'');
+  if(d.coaching_observation)html+=mkCard('✨','Today\'s Invitation',d.coaching_observation,'');
   if(d.declaration)html+=mkCard('💬','True Thing',d.declaration,'declaration');
   html+=mkCard('🌿','Most Like Yourself',d.ci_win||'','');
   html+=mkCard('🎯','Where I Fell Short',d.ci_fell_short||'','');

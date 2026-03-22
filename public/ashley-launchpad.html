@@ -208,13 +208,13 @@ function renderParsed(){
   const d=parsedData;
   const mkCard=(ic,lb,ct,cls='')=>`<div class="category-card"><div class="cat-head"><span class="cat-icon">${ic}</span><span class="cat-label">${lb}</span></div><div class="cat-body${ct?'':' empty'}${cls?' '+cls:''}">${ct||'Nothing captured here.'}</div></div>`;
   let html='';
-  if(d.coaching_observation)html+=mkCard('✨','Today's Invitation',d.coaching_observation,'');
+  if(d.coaching_observation)html+=mkCard('✨','Today\'s Invitation',d.coaching_observation,'');
   if(d.declaration)html+=mkCard('💬','True Thing',d.declaration,'declaration');
   html+=mkCard('🌿','Heart Check',d.heart_check||'','');
   html+=mkCard('✝','What God Is Speaking',d.what_god_is_speaking||'','');
   html+=mkCard('💛','Relationship Pulse',d.relationship_pulse||'','');
-  html+=mkCard('🌱','Who I'm Becoming',d.who_i_am_becoming||'','');
-  html+=mkCard('🙏','What I'm Releasing',d.what_i_am_releasing||'','');
+  html+=mkCard('🌱','Who I\'m Becoming',d.who_i_am_becoming||'','');
+  html+=mkCard('🙏','What I\'m Releasing',d.what_i_am_releasing||'','');
   if(d.scripture_mention)html+=mkCard('📖','Scripture Referenced',d.scripture_mention,'');
   
   document.getElementById('parsed-cards').innerHTML=html;
