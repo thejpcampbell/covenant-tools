@@ -231,7 +231,11 @@ function toggleYaml(){const el=document.getElementById('yaml-out');el.style.disp
 async function submitDrop(){
   const d=parsedData||{};
   const payload={timestamp:new Date().toISOString(),date:new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),scripture_ref:sc.ref,scripture_text:sc.text,type:'ASHLEY_LAUNCHPAD',raw_drop:rawDrop,declaration:d.declaration||'',coaching_observation:d.coaching_observation||'',heart_check:d.heart_check||'',what_god_is_speaking:d.what_god_is_speaking||'',relationship_pulse:d.relationship_pulse||'',who_i_am_becoming:d.who_i_am_becoming||'',what_i_am_releasing:d.what_i_am_releasing||'',scripture_mention:d.scripture_mention||''};
-  try{await fetch(SHEETS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.error(e);}
+  try{
+    const r=await fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const result=await r.json();
+    console.log('Sheets response:',result);
+  }catch(e){console.error('Log error:',e);}
   go('s-success');
 }
 </script>

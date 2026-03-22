@@ -230,7 +230,11 @@ function toggleYaml(){const el=document.getElementById('yaml-out');el.style.disp
 async function submitDrop(){
   const d=parsedData||{};
   const payload={timestamp:new Date().toISOString(),date:new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),scripture_ref:sc.ref,scripture_text:sc.text,type:'JP_LAUNCHPAD',raw_drop:rawDrop,declaration:d.declaration||'',coaching_observation:d.coaching_observation||'',emotional_release:d.emotional_release||'',spiritual:d.spiritual||'',identity_declaration:d.identity_declaration_category||'',personal_relationship:d.personal_relationship||'',scripture_mention:d.scripture_mention||''};
-  try{await fetch(SHEETS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.error(e);}
+  try{
+    const r=await fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const result=await r.json();
+    console.log('Sheets response:',result);
+  }catch(e){console.error('Log error:',e);}
   go('s-success');
 }
 </script>

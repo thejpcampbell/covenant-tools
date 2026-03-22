@@ -215,7 +215,11 @@ function toggleYaml(){const el=document.getElementById('yaml-out');el.style.disp
 async function submitDrop(){
   const d=parsedData||{};
   const payload={type:'SUNDAY_CLOSING',timestamp:new Date().toISOString(),date:new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),raw_drop:rawDrop,covenant_word:d.covenant_word||'',gratitude:d.gratitude||'',revelation:d.revelation||'',believing_for:d.believing_for||'',prayer:d.prayer||''};
-  try{await fetch(SHEETS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){console.error(e);}
+  try{
+    const r=await fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const result=await r.json();
+    console.log('Sheets response:',result);
+  }catch(e){console.error('Log error:',e);}
   go('s-success');
 }
 </script>
