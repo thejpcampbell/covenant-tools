@@ -169,7 +169,7 @@ function pp(d){if(pin.length>=4)return;pin+=d;updateDots();if(pin.length===4)che
 function pb(){pin=pin.slice(0,-1);updateDots();document.getElementById('pin-err').textContent='';}
 function pc(){pin='';updateDots();document.getElementById('pin-err').textContent='';}
 function updateDots(){for(let i=0;i<4;i++)document.getElementById(`d${i}`).classList.toggle('filled',i<pin.length);}
-function checkPin(){if(pin===PIN){initDrop();}else{document.getElementById('pin-err').textContent='Incorrect. Try again.';setTimeout(()=>{pin='';updateDots();document.getElementById('pin-err').textContent='';}),1400);}}
+function checkPin(){if(pin===PIN){initDrop();}else{document.getElementById('pin-err').textContent='Incorrect. Try again.';setTimeout(()=>{pin='';updateDots();document.getElementById('pin-err').textContent='';},1400);}}
 function initDrop(){
   const n=new Date();
   document.getElementById('drop-date').textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
