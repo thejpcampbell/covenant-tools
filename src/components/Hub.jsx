@@ -9,6 +9,7 @@ const LINKS = {
   jp_checkin:        '/jp-checkin.html',
   ashley_checkin:    '/ashley-checkin.html',
   sunday_closing:    '/sunday-closing.html',
+  avynn_prayer:      '/avynn-prayer.html',
 }
 // ══════════════════════════════════════════════════════════════
 
@@ -56,6 +57,15 @@ const TOOLS = [
     title: 'Sunday Closing',
     desc: '4 joint prompts. Gratitude, what the week revealed, believing God for, prayer together. AI generates a Covenant Word over them.',
     meta: ['Sunday', 'JP & Ashley together', 'Covenant Word'],
+    color: 'gold',
+  },
+  {
+    id: 'avynn_prayer',
+    tag: 'Nightly · Together',
+    person: 'Together',
+    title: "Avynn's Prayer",
+    desc: 'Drop your hearts about Avynn — her day, what you believe over her. AI builds a customized prayer she repeats line by line with you.',
+    meta: ['Every night', 'JP & Ashley together', 'Avynn repeats'],
     color: 'gold',
   },
 ]

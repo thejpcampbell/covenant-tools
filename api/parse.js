@@ -24,6 +24,30 @@ export default async function handler(req, res) {
       sunday_closing: '{"gratitude":"","revelation":"","believing_for":"","prayer":"","covenant_word":""}',
     };
 
+    // Avynn prayer passes its own system/user prompts directly
+    if (tool === 'avynn_prayer') {
+      const system = req.body._system;
+      const userMsg = req.body._user;
+      if (!system || !userMsg) return res.status(400).json({ error: 'Missing system/user for avynn_prayer' });
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, system, messages: [{ role: 'user', content: userMsg }] }),
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) return res.status(500).json({ error: data.error?.message || 'API error' });
+      const raw = data.content?.filter(b => b.type === 'text').map(b => b.text).join('').trim() || '';
+      let parsed = null;
+      for (const fn of [
+        () => JSON.parse(raw),
+        () => JSON.parse(raw.replace(/```json|```/g, '').trim()),
+        () => { const m = raw.match(/\{[\s\S]*\}/); return JSON.parse(m[0]); },
+        () => { const s = raw.indexOf('{'), e = raw.lastIndexOf('}'); return JSON.parse(raw.slice(s, e+1)); },
+      ]) { try { parsed = fn(); break; } catch(e) {} }
+      if (!parsed) parsed = { lines: ['God thank You for tonight.', 'You love Avynn completely.', 'Watch over her as she sleeps.', 'She is Yours.', 'Amen.'], blessing_word: 'Sleep in peace tonight, sweet girl.', scripture_note: '' };
+      return res.status(200).json({ success: true, data: parsed });
+    }
+
     if (!SYSTEMS[tool]) return res.status(400).json({ error: 'Unknown tool: ' + tool });
 
     const promptList = prompts?.map((p, i) => `${i+1}. ${p}`).join('\n') || '';
@@ -33,7 +57,7 @@ Scripture: "${scripture?.text}" — ${scripture?.ref}
 ${promptList ? `Prompts they may have spoken to (extract by theme, not order — drop may be freestyle):\n${promptList}\n\n` : ''}Raw drop (may be freestyle, voice-to-text, rambling — extract the signal from the noise):
 "${drop}"
 
-Fill every field you can find evidence for. Empty string if nothing. Extract SUBSTANCE — full sentences, complete thoughts, emotional depth. Do not summarize briefly when there is more to capture. For coaching_observation: minimum 3-5 sentences, specific to the patterns and tensions in this exact drop. For declaration: one powerful sentence they can carry all day.
+Fill every field you can find evidence for. Empty string if nothing. CRITICAL INSTRUCTION: Do NOT compress, summarize, or leave anything out. If they spoke for 5-10 minutes, the output should reflect that depth. Each category should be as long as it needs to be to capture everything they said that belongs there. Use their actual words and phrases where they carry weight. Preserve the emotional texture — the hesitations, the contradictions, the breakthroughs. For emotional_release: capture everything — name every weight, fear, resentment, grief, tension they expressed. Do not leave a single thing they carried on the table. For spiritual: preserve every spiritual observation, every sense of God's presence or absence, every scripture connection. For personal_relationship: capture every nuance about the marriage, the restoration, the needs, the fears, the hopes. For coaching_observation: minimum 4-6 sentences, written as a coach who has heard every word. Speak to the specific patterns, the specific tensions, the specific growth edges visible in THIS drop. For declaration: one sentence that carries the weight of everything they just processed.
 
 Return ONLY this JSON structure filled in, nothing else:
 ${SCHEMAS[tool]}`;
@@ -47,7 +71,7 @@ ${SCHEMAS[tool]}`;
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
+        max_tokens: 4000,
         system: SYSTEMS[tool],
         messages: [{ role: 'user', content: userMsg }],
       }),
