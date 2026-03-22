@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const SHEETS = 'https://script.google.com/a/macros/thefrankdeluca.com/s/AKfycbxMyTpRHFyOjxLBLKapsiDceb8J3hThcVXxQ6a3xJWdSU5MUHJwVweHaeppFhHzpHLIwQ/exec';
+  const SHEETS = 'https://script.google.com/macros/s/AKfycbyUhRHbrxMdsG6VGCdKglVzrqUBJO000-2h19UqX8kkAeULOCKc1FmahKqwG08IPdx-mA/exec';
 
   try {
     const payload = req.method === 'POST' ? req.body : { type: 'TEST', timestamp: new Date().toISOString(), date: 'Test', message: 'Connection test from Vercel' };
