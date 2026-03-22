@@ -4,11 +4,11 @@ import React, { useState } from 'react'
 // PASTE YOUR CLAUDE ARTIFACT LINKS HERE
 // ══════════════════════════════════════════════════════════════
 const LINKS = {
-  jp_launchpad:      'https://claude.ai/public/artifacts/9b698001-3ccf-44a6-878e-be728fc911a1',
-  ashley_launchpad:  'https://claude.ai/public/artifacts/dea9efde-f9e9-4a7d-aa2a-dcc537c9d030',
-  jp_checkin:        'https://claude.ai/public/artifacts/0dc6d3a4-b3ec-452f-831a-3decddf914f8',
-  ashley_checkin:    'https://claude.ai/public/artifacts/87e2c1d0-6590-4e70-a5f6-2071f6856d5d',
-  sunday_closing:    'https://claude.ai/public/artifacts/e3017fe2-f0bd-46e5-ba70-038a89e50e09',
+  jp_launchpad:      'https://claude.ai/public/artifacts/08ae9b1c-e431-4f32-9d3a-fac9f92466b8',
+  ashley_launchpad:  'https://claude.ai/public/artifacts/9b3b3b0d-0563-496b-820d-c2b116ad2381',
+  jp_checkin:        'https://claude.ai/public/artifacts/e7b48226-cf95-4ed6-baa4-d6d15aa519fe',
+  ashley_checkin:    'https://claude.ai/public/artifacts/818034ed-4d0d-41c3-9b02-7e902600c71f',
+  sunday_closing:    'https://claude.ai/public/artifacts/a95b5a71-69a4-4ff6-932f-7c3c35e93d70',
 }
 // ══════════════════════════════════════════════════════════════
 
