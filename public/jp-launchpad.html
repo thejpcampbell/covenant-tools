@@ -173,7 +173,7 @@ function checkPin(){if(pin===PIN){initDrop();}else{document.getElementById('pin-
 function initDrop(){
   const n=new Date();
   document.getElementById('drop-date').textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  sc=SCRIPTURES[Math.floor((n-new Date(n.getFullYear(),0,0))/86400000)%SCRIPTURES.length];
+  sc=SCRIPTURES[Math.floor(Math.random()*SCRIPTURES.length)];
   document.getElementById('sc-verse').textContent=`"${sc.text}"`;
   document.getElementById('sc-ref').textContent=`${sc.ref} · ESV`;
   go('s-drop');
