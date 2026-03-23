@@ -10,12 +10,12 @@ const LINKS = {
 }
 
 const TOOLS = [
-  { id:'jp_launchpad',    tag:'Daily · Morning',        person:'jp',      title:'Morning Launchpad',  desc:"7 soul-search prompts. Voice drop. AI parses into command categories — emotional release, spiritual, identity, relationship.", meta:['Daily','Voice or type','AI parsed'],        color:'cyan' },
+  { id:'jp_launchpad',    tag:'Daily · Morning',        person:'jp',      title:'Morning Launchpad',  desc:"7 soul-search prompts. Voice drop. Organizes into command categories — emotional release, spiritual, identity, relationship.", meta:['Daily','Voice or type','Organized'],        color:'cyan' },
   { id:'jp_checkin',      tag:'Weekly · Saturday',      person:'jp',      title:'Weekly Check-In',    desc:"7 accountability prompts. Win, fell short, God spoke, patterns, husband score, temperature, need. Coaching observation generated.", meta:['Saturday','Individual','Logs to record'], color:'cyan' },
-  { id:'ashley_launchpad',tag:'Daily · Morning',        person:'ashley',  title:'Morning Reflection', desc:"7 reflective prompts. Heart check, God's presence, fear release, marriage intention, unspoken need, invitation, true thing.", meta:['Daily','Voice or type','AI parsed'],        color:'teal' },
+  { id:'ashley_launchpad',tag:'Daily · Morning',        person:'ashley',  title:'Morning Reflection', desc:"7 reflective prompts. Heart check, God's presence, fear release, marriage intention, unspoken need, invitation, true thing.", meta:['Daily','Voice or type','Organized'],        color:'teal' },
   { id:'ashley_checkin',  tag:'Weekly · Saturday',      person:'ashley',  title:'Weekly Check-In',    desc:"7 growth prompts. Most like herself, fell short, God spoke, patterns, covenant presence, temperature, need going forward.", meta:['Saturday','Individual','Logs to record'], color:'teal' },
-  { id:'sunday_closing',  tag:'Weekly · Sunday · Joint',person:'together',title:'Sunday Closing',     desc:"4 joint prompts. Gratitude, what the week revealed, believing God for, prayer together. AI generates a Covenant Word over them.", meta:['Sunday','JP & Ashley together','Covenant Word'], color:'gold' },
-  { id:'avynn_prayer',    tag:'Nightly · Together',     person:'together',title:"Avynn's Prayer",     desc:"Drop your hearts about Avynn — her day, what you believe over her. AI builds a customized prayer she repeats line by line with you.", meta:['Every night','JP & Ashley together','Avynn repeats'], color:'gold' },
+  { id:'sunday_closing',  tag:'Weekly · Sunday · Joint',person:'together',title:'Sunday Closing',     desc:"4 joint prompts. Gratitude, what the week revealed, believing God for, prayer together. Generates a Covenant Word over them.", meta:['Sunday','JP & Ashley together','Covenant Word'], color:'gold' },
+  { id:'avynn_prayer',    tag:'Nightly · Together',     person:'together',title:"Avynn's Prayer",     desc:"Drop your hearts about Avynn — her day, what you believe over her. Builds a customized prayer she repeats line by line with you.", meta:['Every night','JP & Ashley together','Avynn repeats'], color:'gold' },
 ]
 
 const C = {
@@ -186,11 +186,11 @@ export default function Hub() {
               <span style={styles.t1}>Covenant</span>
               <span style={styles.t2}>Tools</span>
             </div>
-            <div style={styles.heroSub}>Daily and weekly instruments for JP and Ashley Campbell. Scripture anchored, AI parsed, covenant logged.</div>
+            <div style={styles.heroSub}>Daily and weekly instruments for JP and Ashley Campbell. Scripture anchored, Organized, covenant logged.</div>
             <div style={styles.stats}>
               <div style={styles.stat}><div style={styles.sdot}></div><span style={styles.statB}>6</span>/6 tools live</div>
               <div style={styles.stat}><div style={styles.sdot}></div>Logs to Covenant Record</div>
-              <div style={styles.stat}><div style={styles.sdot}></div>AI parsed</div>
+              <div style={styles.stat}><div style={styles.sdot}></div>Organized</div>
             </div>
           </div>
 

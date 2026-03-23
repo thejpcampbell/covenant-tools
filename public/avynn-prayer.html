@@ -146,7 +146,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
   </div>
 </div>
 <div id="s-loading" class="screen">
-  <div class="loading-wrap"><div class="loading-title"><em>Building her prayer...</em></div><div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
+  <div class="loading-wrap"><div class="loading-title"><em>Building tonight's prayer...</em></div><div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
 </div>
 <div id="s-prayer" class="screen">
   <div class="top-nav"><div class="nav-brand">Tonight's Prayer</div><div class="nav-back" onclick="go('s-drop')">← Redo</div></div>
@@ -198,7 +198,7 @@ async function parsePrayer(){
   try{
     const resp=await fetch('/api/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'avynn_prayer',drop,scripture:sc,date:today,prompts:[],_system:system,_user:user})});
     const result=await resp.json();
-    if(!result.success)throw new Error(result.error||'Parse failed');
+    if(!result.success)throw new Error(result.error||'Could not be organized');
     pd=result.data;renderPrayer();go('s-prayer');
   }catch(err){
     console.error(err);
@@ -212,7 +212,7 @@ function renderPrayer(){
   document.getElementById('prayer-sc-block').innerHTML='<div class="sc-label">Tonight\'s Scripture</div><div class="sc-verse" style="font-family:\'Playfair Display\',serif;font-size:17px;font-style:italic;line-height:1.7;margin-bottom:10px;">"'+sc.t+'"</div><div style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:8px;">'+(d.scripture_note||'')+'</div><div class="sc-ref">'+sc.r+'</div>';
   const lines=Array.isArray(d.lines)?d.lines.filter(l=>l&&l.trim()):[];
   if(!lines.length&&!d.blessing_word){
-    document.getElementById('prayer-lines').innerHTML='<div class="prayer-line" style="border-left-color:rgba(255,85,102,0.5)"><div class="line-speaker" style="color:#ff5566;">Parse Incomplete</div><div class="line-text">Drop came through but prayer could not be built. Drop again with more detail about her day.</div></div>';
+    document.getElementById('prayer-lines').innerHTML='<div class="prayer-line" style="border-left-color:rgba(255,85,102,0.5)"><div class="line-speaker" style="color:#ff5566;">Not Organized</div><div class="line-text">Drop came through but prayer could not be built. Drop again with more detail about her day.</div></div>';
     document.getElementById('blessing-block').innerHTML='';
     return;
   }

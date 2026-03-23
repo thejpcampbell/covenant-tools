@@ -201,7 +201,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
 </div>
 <div id="s-loading" class="screen">
   <div class="loading-wrap">
-    <div class="loading-title"><em>Reading your week...</em></div>
+    <div class="loading-title"><em>Organizing your week...</em></div>
     <div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
   </div>
 </div>
@@ -274,11 +274,11 @@ async function parseDrop(){
   try{
     const resp=await fetch('/api/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'jp_checkin',drop,scripture:sc,date:today,prompts:PROMPTS})});
     const result=await resp.json();
-    if(!result.success)throw new Error(result.error||'Parse failed');
+    if(!result.success)throw new Error(result.error||'Could not be organized');
     pd=result.data;renderParsed();go('s-parsed');
   }catch(err){
     console.error(err);
-    pd={coaching_observation:'Drop received. Parse failed: '+err.message+'. Try again.',declaration:'',emotional_release:'',spiritual:'',identity_declaration_category:'',personal_relationship:'',heart_check:'',what_god_is_speaking:'',relationship_pulse:'',who_i_am_becoming:'',what_i_am_releasing:'',ci_win:'',ci_fell_short:'',ci_god_spoke:'',ci_pattern:'',ci_husband:'',ci_covenant:'',ci_temp:'',ci_temp_note:'',ci_need:'',scripture_mention:''};
+    pd={coaching_observation:'Drop received. Could not be organized: '+err.message+'. Try again.',declaration:'',emotional_release:'',spiritual:'',identity_declaration_category:'',personal_relationship:'',heart_check:'',what_god_is_speaking:'',relationship_pulse:'',who_i_am_becoming:'',what_i_am_releasing:'',ci_win:'',ci_fell_short:'',ci_god_spoke:'',ci_pattern:'',ci_husband:'',ci_covenant:'',ci_temp:'',ci_temp_note:'',ci_need:'',scripture_mention:''};
     renderParsed();go('s-parsed');
   }
 }
@@ -294,7 +294,7 @@ function renderParsed(){
   if(d.ci_husband)html+=mkCard('💛','How I Showed Up as Husband',d.ci_husband,'');
   if(d.ci_temp)html+=mkCard('🌡','Emotional Temperature',d.ci_temp+'/10 — '+(d.ci_temp_note||''),'');
   if(d.ci_need)html+=mkCard('🔑','Need Going Into Next Week',d.ci_need,'');
-  if(!d.coaching_observation&&!d.ci_win&&!d.ci_fell_short)html='<div class="cat-card" style="border-color:rgba(255,85,102,0.3)"><div class="cat-head"><span class="cat-icon">⚠</span><span class="cat-label" style="color:#ff5566;">Parse Incomplete</span></div><div class="cat-body">Drop received but content not extracted. Try again with more detail.</div></div>';
+  if(!d.coaching_observation&&!d.ci_win&&!d.ci_fell_short)html='<div class="cat-card" style="border-color:rgba(255,85,102,0.3)"><div class="cat-head"><span class="cat-icon">⚠</span><span class="cat-label" style="color:#ff5566;">Not Organized</span></div><div class="cat-body">Drop received but could not be organized. Try again with more detail.</div></div>';
   
   document.getElementById('parsed-cards').innerHTML=html;
   let yaml='drop:\n  tool: "jp_checkin"\n  date: "'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'"\n';

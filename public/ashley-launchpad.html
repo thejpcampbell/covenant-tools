@@ -201,7 +201,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
 </div>
 <div id="s-loading" class="screen">
   <div class="loading-wrap">
-    <div class="loading-title"><em>Reading your reflection...</em></div>
+    <div class="loading-title"><em>Organizing your reflection...</em></div>
     <div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
   </div>
 </div>
@@ -274,28 +274,28 @@ async function parseDrop(){
   try{
     const resp=await fetch('/api/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'ashley_launchpad',drop,scripture:sc,date:today,prompts:PROMPTS})});
     const result=await resp.json();
-    if(!result.success)throw new Error(result.error||'Parse failed');
+    if(!result.success)throw new Error(result.error||'Could not be organized');
     pd=result.data;renderParsed();go('s-parsed');
   }catch(err){
     console.error(err);
-    pd={coaching_observation:'Drop received. Parse failed: '+err.message+'. Try again.',declaration:'',emotional_release:'',spiritual:'',identity_declaration_category:'',personal_relationship:'',heart_check:'',what_god_is_speaking:'',relationship_pulse:'',who_i_am_becoming:'',what_i_am_releasing:'',ci_win:'',ci_fell_short:'',ci_god_spoke:'',ci_pattern:'',ci_husband:'',ci_covenant:'',ci_temp:'',ci_temp_note:'',ci_need:'',scripture_mention:''};
+    pd={coaching_observation:'Drop received. Could not be organized: '+err.message+'. Try again.',declaration:'',emotional_release:'',spiritual:'',identity_declaration_category:'',personal_relationship:'',heart_check:'',what_god_is_speaking:'',relationship_pulse:'',who_i_am_becoming:'',what_i_am_releasing:'',ci_win:'',ci_fell_short:'',ci_god_spoke:'',ci_pattern:'',ci_husband:'',ci_covenant:'',ci_temp:'',ci_temp_note:'',ci_need:'',scripture_mention:''};
     renderParsed();go('s-parsed');
   }
 }
 function mkCard(ic,lb,ct,cls){return '<div class="cat-card"><div class="cat-head"><span class="cat-icon">'+ic+'</span><span class="cat-label">'+lb+'</span></div><div class="cat-body'+(ct?'':' empty')+(cls?' '+cls:'')+'>'+(ct||'Nothing captured here.')+'</div></div>';}
 function renderParsed(){
   const d=pd;let html='';
-  if(d.coaching_observation)html+=mkCard('✨','Today's Invitation',d.coaching_observation,'');
+  if(d.coaching_observation)html+=mkCard('✨',"Today's Invitation",d.coaching_observation,'');
   if(d.declaration)html+=mkCard('💬','True Thing',d.declaration,'decl');
   if(d.heart_check)html+=mkCard('🌿','Heart Check',d.heart_check,'');
   if(d.what_god_is_speaking)html+=mkCard('✝','What God Is Speaking',d.what_god_is_speaking,'');
   if(d.relationship_pulse)html+=mkCard('💛','Relationship Pulse',d.relationship_pulse,'');
-  if(d.who_i_am_becoming)html+=mkCard('🌱','Who I'm Becoming',d.who_i_am_becoming,'');
-  if(d.what_i_am_releasing)html+=mkCard('🙏','What I'm Releasing',d.what_i_am_releasing,'');
+  if(d.who_i_am_becoming)html+=mkCard('🌱',"Who I'm Becoming",d.who_i_am_becoming,'');
+  if(d.what_i_am_releasing)html+=mkCard('🙏',"What I'm Releasing",d.what_i_am_releasing,'');
   if(d.scripture_mention)html+=mkCard('📖','Scripture Referenced',d.scripture_mention,'');
   
   if(!d.coaching_observation&&!d.heart_check&&!d.what_god_is_speaking&&!d.relationship_pulse&&!d.who_i_am_becoming&&!d.what_i_am_releasing){
-    html='<div class="cat-card" style="border-color:rgba(255,85,102,0.3)"><div class="cat-head"><span class="cat-icon">⚠</span><span class="cat-label" style="color:#ff5566;">Parse Incomplete</span></div><div class="cat-body">Your drop came through but the AI couldn\'t extract content. Drop again — speak through each prompt in detail.</div></div>';
+    html='<div class="cat-card" style="border-color:rgba(255,85,102,0.3)"><div class="cat-head"><span class="cat-icon">⚠</span><span class="cat-label" style="color:#ff5566;">Not Organized</span></div><div class="cat-body">Your drop came through but the engine couldn\'t extract content. Drop again — speak through each prompt in detail.</div></div>';
   }
   document.getElementById('parsed-cards').innerHTML=html;
   let yaml='drop:\n  tool: "ashley_launchpad"\n  date: "'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'"\n';
