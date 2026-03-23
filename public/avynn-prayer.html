@@ -73,13 +73,24 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
 .section-div{display:flex;align-items:center;gap:12px;margin:20px 0 16px;}
 .section-div-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,216,74,0.25),transparent);}
 .section-div-label{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
-.prayer-hint{font-size:13px;color:var(--dim);font-style:italic;margin-bottom:16px;}
-.prayer-lines{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
-.prayer-line{background:var(--s1);border:1px solid rgba(255,255,255,0.06);border-left:3px solid rgba(255,216,74,0.4);border-radius:4px;padding:16px 18px;}
-.prayer-line.avynn-line{border-left-color:rgba(212,149,106,0.6);background:rgba(212,149,106,0.04);}
-.line-speaker{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
-.line-speaker.avynn-sp{color:var(--p1);text-shadow:0 0 10px var(--pg);}
-.line-text{font-family:'Playfair Display',serif;font-size:19px;line-height:1.65;}
+.prayer-hint{font-size:13px;color:var(--dim);font-style:italic;margin-bottom:20px;}
+.prayer-lines{display:flex;flex-direction:column;gap:20px;margin-bottom:28px;}
+.prayer-line{
+  background:var(--s1);
+  border:1px solid rgba(255,216,74,0.15);
+  border-left:3px solid rgba(255,216,74,0.5);
+  border-radius:4px;
+  padding:22px 24px 18px;
+  box-shadow:0 2px 20px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,216,74,0.05);
+  transition:border-color 0.2s;
+}
+.prayer-line:hover{border-color:rgba(255,216,74,0.35);}
+.line-number{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim);margin-bottom:10px;}
+.line-text{font-family:'Playfair Display',serif;font-size:22px;line-height:1.7;color:var(--text);margin-bottom:14px;}
+.line-repeat-row{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.04);}
+.line-repeat-icon{font-size:16px;}
+.line-repeat-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--p1);opacity:0.8;}
+.line-repeat-text{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--muted);flex:1;}
 .yaml-toggle{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);cursor:pointer;margin-bottom:11px;display:block;}
 .yaml-toggle:hover{color:var(--g1);}
 .yaml-block{background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:4px;padding:18px;font-family:monospace;font-size:13px;line-height:1.8;color:var(--muted);white-space:pre-wrap;word-break:break-word;display:none;margin-bottom:14px;}
@@ -145,7 +156,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font
     <div id="blessing-block"></div>
     <div class="prayer-sc" id="prayer-sc-block"></div>
     <div class="section-div"><div class="section-div-line"></div><div class="section-div-label">Pray Together</div><div class="section-div-line"></div></div>
-    <div class="prayer-hint">Parents speak each line — Avynn repeats after you.</div>
+    <div class="prayer-hint">Read each line aloud. Avynn repeats it after you.</div>
     <div class="prayer-lines" id="prayer-lines"></div>
     <span class="yaml-toggle" onclick="toggleYaml()">[ Export YAML ]</span>
     <div class="yaml-block" id="yaml-out"></div>
@@ -182,7 +193,7 @@ async function parsePrayer(){
   if(!drop){alert('Drop something first.');return;}
   raw=drop;go('s-loading');
   const today=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  const system='You are a prayer builder for JP and Ashley Campbell. They have a daughter named Avynn. Each night they drop their hearts about her and you build a customized prayer they pray over her together, with Avynn repeating each line. Make it personal, warm, age-appropriate. Reference specifics from their drop. Return ONLY a raw JSON object — no markdown, no backticks. Start with { and end with }.';
+  const system='You are a prayer builder for JP and Ashley Campbell. They have a daughter named Avynn. Each night they drop their hearts about her and you build a customized prayer they pray over her together line by line. CRITICAL: Always refer to her by name — Avynn — never 'your daughter', 'she', 'her', or any other reference in the prayer lines themselves. Each prayer line should feel like it is spoken directly over Avynn by name where natural. Make it personal, warm, age-appropriate, specific to what they shared. Return ONLY a raw JSON object — no markdown, no backticks. Start with { and end with }.';
   const user='Date: '+today+'\nScripture: "'+sc.t+'" — '+sc.r+'\n\nDrop about Avynn:\n"'+drop+'"\n\nBuild a prayer with 6-8 full sentences parents speak and Avynn repeats. Cover: gratitude for her, identity over her, protection over her sleep, specific things from the drop, closing declaration.\n\nblessing_word: one line (10-15 words) spoken as a blessing over her to carry into sleep.\nscripture_note: one sentence connecting tonight\'s scripture to something specific about Avynn.\n\nReturn exactly:\n{"lines":["","","","","",""],"blessing_word":"","scripture_note":""}';
   try{
     const resp=await fetch('/api/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'avynn_prayer',drop,scripture:sc,date:today,prompts:[],_system:system,_user:user})});
@@ -199,11 +210,22 @@ function renderPrayer(){
   const d=pd;
   document.getElementById('blessing-block').innerHTML='<div class="blessing-card"><div class="blessing-label">✦ Tonight\'s Blessing</div><div class="blessing-text">'+(d.blessing_word||'')+'</div></div>';
   document.getElementById('prayer-sc-block').innerHTML='<div class="sc-label">Tonight\'s Scripture</div><div class="sc-verse" style="font-family:\'Playfair Display\',serif;font-size:17px;font-style:italic;line-height:1.7;margin-bottom:10px;">"'+sc.t+'"</div><div style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:8px;">'+(d.scripture_note||'')+'</div><div class="sc-ref">'+sc.r+'</div>';
-  const lines=Array.isArray(d.lines)?d.lines:[];
+  const lines=Array.isArray(d.lines)?d.lines.filter(l=>l&&l.trim()):[];
+  if(!lines.length&&!d.blessing_word){
+    document.getElementById('prayer-lines').innerHTML='<div class="prayer-line" style="border-left-color:rgba(255,85,102,0.5)"><div class="line-speaker" style="color:#ff5566;">Parse Incomplete</div><div class="line-text">Drop came through but prayer could not be built. Drop again with more detail about her day.</div></div>';
+    document.getElementById('blessing-block').innerHTML='';
+    return;
+  }
   let html='';
-  lines.forEach(line=>{
-    html+='<div class="prayer-line"><div class="line-speaker">Parents speak</div><div class="line-text">'+line+'</div></div>';
-    html+='<div class="prayer-line avynn-line"><div class="line-speaker avynn-sp">🌸 Avynn repeats</div><div class="line-text">'+line+'</div></div>';
+  lines.forEach((line,i)=>{
+    html+=`<div class="prayer-line">
+      <div class="line-number">Line ${i+1}</div>
+      <div class="line-text">${line}</div>
+      <div class="line-repeat-row">
+        <span class="line-repeat-icon">🌸</span>
+        <span class="line-repeat-label">Avynn repeats</span>
+      </div>
+    </div>`;
   });
   document.getElementById('prayer-lines').innerHTML=html;
   let yaml='avynn_prayer:\n  date: "'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'"\n  scripture_ref: "'+sc.r+'"\n  blessing_word: "'+(d.blessing_word||'')+'"\n  prayer_lines:\n';

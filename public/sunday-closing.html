@@ -185,7 +185,13 @@ function renderParsed(){
   const d=pd;
   if(d.covenant_word){document.getElementById('cov-word-block').innerHTML='<div class="cov-word"><div class="cov-word-label">✦ Covenant Word</div><div class="cov-word-text">'+d.covenant_word+'</div></div>';}
   let html='';
-  html+=mkCard('💛','Gratitude',d.gratitude,'');html+=mkCard('🔍','What This Week Revealed',d.revelation,'');html+=mkCard('🙌','Believing God For',d.believing_for,'');html+=mkCard('🙏','Your Prayer Together',d.prayer,'italic');
+  if(d.gratitude)html+=mkCard('💛','Gratitude',d.gratitude,'');
+  if(d.revelation)html+=mkCard('🔍','What This Week Revealed',d.revelation,'');
+  if(d.believing_for)html+=mkCard('🙌','Believing God For',d.believing_for,'');
+  if(d.prayer)html+=mkCard('🙏','Your Prayer Together',d.prayer,'italic');
+  if(!d.gratitude&&!d.revelation&&!d.believing_for&&!d.prayer&&!d.covenant_word){
+    html='<div class="cat-card" style="border-color:rgba(255,216,74,0.3)"><div class="cat-head"><span class="cat-icon">⚠</span><span class="cat-label" style="color:#ffd84a;">Parse Incomplete</span></div><div class="cat-body">Your drop came through but the AI couldn\'t extract content. Drop again with more detail from each prompt.</div></div>';
+  }
   document.getElementById('parsed-cards').innerHTML=html;
   let yaml='sunday_closing:\n  date: "'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'"\n  scripture:\n    ref: "'+sc.r+'"\n    text: "'+sc.t+'"\n  raw_drop: |\n    '+raw.replace(/\n/g,'\n    ')+'\n';
   Object.entries(d).forEach(([k,v])=>{if(v)yaml+='  '+k+': "'+String(v).replace(/"/g,'\\"')+'"\n';});

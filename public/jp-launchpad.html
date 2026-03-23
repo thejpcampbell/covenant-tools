@@ -285,13 +285,16 @@ async function parseDrop(){
 function mkCard(ic,lb,ct,cls){return '<div class="cat-card"><div class="cat-head"><span class="cat-icon">'+ic+'</span><span class="cat-label">'+lb+'</span></div><div class="cat-body'+(ct?'':' empty')+(cls?' '+cls:'')+'>'+(ct||'Nothing captured here.')+'</div></div>';}
 function renderParsed(){
   const d=pd;let html='';
-  html+=mkCard('◆','Coaching Observation',d.coaching_observation||'','');
+  if(d.coaching_observation)html+=mkCard('◆','Coaching Observation',d.coaching_observation,'');
   if(d.declaration)html+=mkCard('📣','Declaration',d.declaration,'decl');
-  html+=mkCard('🔥','Emotional Release',d.emotional_release||'','');
-  html+=mkCard('✝','Spiritual',d.spiritual||'','');
-  html+=mkCard('⚔','Identity',d.identity_declaration_category||'','');
-  html+=mkCard('💛','Personal · Relationship',d.personal_relationship||'','');
-  html+=mkCard('📖','Scripture Referenced',d.scripture_mention||'','');
+  if(d.emotional_release)html+=mkCard('🔥','Emotional Release',d.emotional_release,'');
+  if(d.spiritual)html+=mkCard('✝','Spiritual',d.spiritual,'');
+  if(d.identity_declaration_category)html+=mkCard('⚔','Identity',d.identity_declaration_category,'');
+  if(d.personal_relationship)html+=mkCard('💛','Personal · Relationship',d.personal_relationship,'');
+  if(d.scripture_mention)html+=mkCard('📖','Scripture Referenced',d.scripture_mention,'');
+  if(!d.coaching_observation&&!d.emotional_release&&!d.spiritual&&!d.personal_relationship){
+    html='<div class="cat-card" style="border-color:rgba(255,85,102,0.3)"><div class="cat-head"><span class="cat-icon">⚠</span><span class="cat-label" style="color:#ff5566;">Parse Incomplete</span></div><div class="cat-body">The AI parsed your drop but couldn't extract content. Try dropping again with more detail, or speak through each prompt one at a time.</div></div>';
+  }
   
   document.getElementById('parsed-cards').innerHTML=html;
   let yaml='drop:\n  tool: "jp_launchpad"\n  date: "'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'"\n';
