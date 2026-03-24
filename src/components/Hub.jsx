@@ -7,11 +7,13 @@ const LINKS = {
   ashley_checkin:   '/ashley-checkin.html',
   sunday_closing:   '/sunday-closing.html',
   avynn_prayer:     '/avynn-prayer.html',
+  prayer_map:       '/prayer-map.html',
 }
 
 const TOOLS = [
   { id:'jp_launchpad',    tag:'Daily · Morning',        person:'jp',      title:'Morning Launchpad',  desc:"7 soul-search prompts. Voice drop. Organizes into command categories — emotional release, spiritual, identity, relationship.", meta:['Daily','Voice or type','Organized'],        color:'cyan' },
   { id:'jp_checkin',      tag:'Weekly · Saturday',      person:'jp',      title:'Weekly Check-In',    desc:"7 accountability prompts. Win, fell short, God spoke, patterns, husband score, temperature, need. Coaching observation generated.", meta:['Saturday','Individual','Logs to record'], color:'cyan' },
+  { id:'prayer_map',      tag:'Daily · Prayer',          person:'jp',      title:'Operational Prayer Map', desc:"7 domains. 7 functions. 49 prayer positions. Identity, vocation, covenant, brotherhood, mind, body, finances — covered daily.", meta:['Daily','7 domains','49 positions'],          color:'cyan' },
   { id:'ashley_launchpad',tag:'Daily · Morning',        person:'ashley',  title:'Morning Reflection', desc:"7 reflective prompts. Heart check, God's presence, fear release, marriage intention, unspoken need, invitation, true thing.", meta:['Daily','Voice or type','Organized'],        color:'teal' },
   { id:'ashley_checkin',  tag:'Weekly · Saturday',      person:'ashley',  title:'Weekly Check-In',    desc:"7 growth prompts. Most like herself, fell short, God spoke, patterns, covenant presence, temperature, need going forward.", meta:['Saturday','Individual','Logs to record'], color:'teal' },
   { id:'sunday_closing',  tag:'Weekly · Sunday · Joint',person:'together',title:'Sunday Closing',     desc:"4 joint prompts. Gratitude, what the week revealed, believing God for, prayer together. Generates a Covenant Word over them.", meta:['Sunday','JP & Ashley together','Covenant Word'], color:'gold' },

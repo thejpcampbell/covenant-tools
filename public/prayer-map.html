@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SENTINEL OPS — Operational Prayer Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800&family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080D18;
+  --bg-card:#0D1322;
+  --bg-card-hover:#111A2E;
+  --bg-surface:#0F1628;
+  --border:#1A2540;
+  --border-light:#253556;
+  --teal:#36E8D0;
+  --teal-bright:#5CFCE8;
+  --teal-glow:rgba(54,232,208,.1);
+  --teal-border:rgba(54,232,208,.3);
+  --gold:#F0C050;
+  --gold-bright:#FFD97A;
+  --gold-hot:#FFBE2E;
+  --gold-dim:#B8912A;
+  --gold-glow:rgba(240,192,80,.12);
+  --gold-glow-strong:rgba(240,192,80,.2);
+  --gold-border:rgba(240,192,80,.35);
+  --text:#F2F0EB;
+  --text-body:#E0DDD6;
+  --text-secondary:#A8B0BE;
+  --text-dim:#6B7A90;
+  --text-ghost:#3D4E65;
+  --fn-adoration:#FFD97A;
+  --fn-confession:#C4A882;
+  --fn-thanksgiving:#34EDAA;
+  --fn-supplication:#6CB4FF;
+  --fn-intercession:#B496FF;
+  --fn-declaration:#FFB830;
+  --fn-warfare:#FF5555;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ═══ AMBIENT GLOW ═══ */
+body::before{content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);width:800px;height:600px;
+  background:radial-gradient(ellipse at center,rgba(240,192,80,.04) 0%,transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:0;left:30%;width:600px;height:500px;
+  background:radial-gradient(ellipse at center,rgba(54,232,208,.02) 0%,transparent 70%);pointer-events:none;z-index:0}
+#app{position:relative;z-index:1}
+
+/* ═══ HEADER ═══ */
+.header{padding:56px 24px 48px;text-align:center;position:relative}
+.header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(600px,85%);height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-dim),var(--gold),var(--gold-dim),transparent);
+  box-shadow:0 0 12px rgba(240,192,80,.15)}
+.h-tag{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:6px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:24px;
+  text-shadow:0 0 30px rgba(240,192,80,.4),0 0 60px rgba(240,192,80,.15)}
+.h-title{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(48px,9vw,80px);line-height:1.05;margin-bottom:6px}
+.h-title span{color:var(--text)}
+.h-title em{font-style:italic;font-weight:700;
+  background:linear-gradient(135deg,var(--gold-bright),var(--gold-hot),var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 12px rgba(240,192,80,.35))}
+.h-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:4px;margin-top:22px;text-transform:uppercase}
+.h-verse{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--text-secondary);margin-top:24px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.65;
+  border-left:2px solid var(--gold-dim);padding-left:20px;text-align:left}
+.h-verse-ref{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);margin-top:10px;letter-spacing:1.5px;
+  text-shadow:0 0 16px rgba(240,192,80,.25)}
+
+/* ═══ DOMAIN NAV ═══ */
+.domain-nav{padding:32px 20px 0;max-width:840px;margin:0 auto}
+.nav-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:16px;text-align:center;
+  text-shadow:0 0 12px rgba(240,192,80,.15)}
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.d-btn{display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .3s;text-align:left}
+.d-btn:hover{background:var(--bg-card-hover);border-color:var(--border-light);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.d-btn.on{background:var(--bg-card-hover);border-color:var(--gold-border);
+  box-shadow:0 0 25px rgba(240,192,80,.08),0 0 50px rgba(240,192,80,.04),inset 0 1px 0 rgba(240,192,80,.05)}
+.d-ico{font-size:24px;flex-shrink:0}
+.d-nm{font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:var(--text-secondary);transition:all .3s;letter-spacing:.3px}
+.d-btn.on .d-nm{color:var(--gold-bright);text-shadow:0 0 20px rgba(240,192,80,.2)}
+.d-btn:hover .d-nm{color:var(--text)}
+.d-vs{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-ghost);margin-top:3px;transition:color .3s}
+.d-btn.on .d-vs{color:var(--text-dim)}
+
+/* ═══ FUNCTION BAR ═══ */
+.fn-section{padding:28px 20px 0;max-width:840px;margin:0 auto}
+.fn-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.fn-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--gold-dim);text-transform:uppercase;
+  text-shadow:0 0 12px rgba(240,192,80,.12)}
+.fn-views{display:flex;gap:4px}
+.fn-vb{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:2px;padding:7px 18px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;transition:all .25s;text-transform:uppercase}
+.fn-vb.on{border-color:var(--gold-border);color:var(--gold);background:var(--gold-glow);
+  box-shadow:0 0 16px rgba(240,192,80,.08);text-shadow:0 0 10px rgba(240,192,80,.2)}
+.fn-grid{display:flex;flex-wrap:wrap;gap:8px}
+.f-btn{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .25s}
+.f-btn:hover{border-color:var(--border-light);background:var(--bg-card-hover);transform:translateY(-1px)}
+.f-btn.on{border-color:color-mix(in srgb,var(--fn-color) 40%,transparent);
+  background:color-mix(in srgb,var(--fn-color) 6%,var(--bg-card));
+  box-shadow:0 0 20px color-mix(in srgb,var(--fn-color) 10%,transparent)}
+.f-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-ghost);transition:color .25s}
+.f-btn.on .f-num{color:var(--fn-color)}
+.f-nm{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text-dim);transition:all .25s;letter-spacing:.3px}
+.f-btn.on .f-nm{color:var(--text);font-weight:600}
+.f-dot{width:8px;height:8px;border-radius:50%;opacity:0;transition:all .25s;margin-left:4px}
+.f-btn.on .f-dot{opacity:1;box-shadow:0 0 6px var(--fn-color),0 0 14px var(--fn-color),0 0 24px color-mix(in srgb,var(--fn-color) 30%,transparent)}
+
+/* ═══ CONTENT ═══ */
+.content{padding:32px 20px 60px;max-width:840px;margin:0 auto}
+
+/* ═══ EMPTY STATE ═══ */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:35vh;text-align:center;padding:40px 20px}
+.empty-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--text-dim)}
+.empty-verse{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--text-ghost);margin-top:14px}
+
+/* ═══ PRAYER CARD ═══ */
+.prayer-card{animation:cardIn .4s ease;border-radius:12px;overflow:hidden;position:relative;
+  background:var(--bg-card);border:1px solid var(--border);
+  box-shadow:0 8px 40px rgba(0,0,0,.3),0 0 60px rgba(0,0,0,.2)}
+.pc-accent{height:3px;position:relative}
+.pc-accent::after{content:'';position:absolute;inset:0;filter:blur(6px);opacity:.6}
+.pc-body{padding:36px 32px 40px}
+.pc-route{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;margin-bottom:4px;
+  text-shadow:0 0 20px currentColor}
+.pc-desc{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-dim);margin-bottom:28px;line-height:1.5}
+.pc-ref{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;margin-bottom:12px;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))}
+.pc-verse{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;color:var(--text-secondary);line-height:1.7;padding-left:20px;margin-bottom:36px;position:relative}
+.pc-verse::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px}
+.pc-divider{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.pc-divider-label{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;white-space:nowrap;
+  text-shadow:0 0 16px currentColor}
+.pc-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border-light),transparent)}
+.pc-prayer p{font-family:'Playfair Display',serif;font-size:20px;line-height:1.9;color:var(--text-body);margin-bottom:22px;font-weight:400}
+.pc-prayer p:first-child::first-letter{font-size:28px;font-weight:700;color:var(--text);float:left;margin-right:3px;line-height:1}
+.pc-prayer p:last-child{margin-bottom:0}
+
+/* ═══ FULL EXPANSION ═══ */
+.full-header{margin-bottom:36px;text-align:center;position:relative}
+.full-header::after{content:'';position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);width:200px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-dim),transparent)}
+.full-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;
+  text-shadow:0 0 20px rgba(240,192,80,.3)}
+.full-nm{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;margin-bottom:6px}
+.full-nm .ico{margin-right:10px}
+.full-ds{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--text-secondary)}
+
+.full-card{margin-bottom:20px;border-radius:12px;overflow:hidden;opacity:0;animation:cardIn .4s ease forwards;position:relative;
+  background:var(--bg-card);border:1px solid var(--border);
+  box-shadow:0 4px 24px rgba(0,0,0,.25)}
+.full-card:hover{border-color:var(--border-light)}
+.fc-accent{height:3px;position:relative}
+.fc-accent::after{content:'';position:absolute;inset:0;filter:blur(5px);opacity:.5}
+.fc-body{padding:28px 26px 32px}
+.fc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fc-num{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;opacity:.4}
+.fc-fnm{font-family:'Inter',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.fc-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:1.5px;padding:4px 12px;border-radius:5px;border:1px solid;margin-left:auto;
+  text-shadow:0 0 10px currentColor}
+.fc-ref{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:10px}
+.fc-verse{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--text-secondary);padding-left:16px;margin-bottom:26px;line-height:1.6;position:relative}
+.fc-verse::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px}
+.fc-body>p{font-family:'Playfair Display',serif;font-size:18px;line-height:1.85;color:var(--text-body);margin-bottom:16px;font-weight:400}
+
+/* ═══ FOOTER ═══ */
+.footer{padding:48px 24px;text-align:center;position:relative}
+.footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(500px,70%);height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);
+  box-shadow:0 0 8px rgba(240,192,80,.1)}
+.ftr-v{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--text-ghost)}
+.ftr-r{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold-dim);letter-spacing:2px;margin-top:8px;
+  text-shadow:0 0 12px rgba(240,192,80,.1)}
+
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:640px){
+  .domain-grid{grid-template-columns:1fr}
+  .fn-grid{gap:6px}
+  .f-btn{padding:9px 12px}
+  .f-nm{font-size:12px}
+  .pc-body{padding:28px 22px 32px}
+  .pc-prayer p{font-size:18px;line-height:1.85}
+  .pc-ref{font-size:26px}
+  .pc-verse{font-size:17px}
+  .fc-body{padding:24px 20px 28px}
+  .fc-body>p{font-size:16px}
+  .header{padding:40px 20px 36px}
+  .h-title{font-size:clamp(40px,10vw,64px)}
+  .h-verse{font-size:16px;padding-left:16px}
+  .full-nm{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var D=[
+{id:"identity",nm:"Identity / The Man",ico:"\u2694\uFE0F",vs:"Colossians 3:23",ds:"Who you are before God \u2014 independent of title, performance, or results"},
+{id:"vocation",nm:"Vocation / DDBA",ico:"\uD83C\uDFDB\uFE0F",vs:"Proverbs 16:3",ds:"Your sales floor, your team, your leadership"},
+{id:"relationship",nm:"Relationship / Covenant",ico:"\uD83D\uDD25",vs:"Ecclesiastes 4:12",ds:"Your woman, the restoration, the covenant"},
+{id:"brotherhood",nm:"Brotherhood",ico:"\uD83D\uDEE1\uFE0F",vs:"Proverbs 27:17",ds:"Craig, Uncle Bobby, the men who sharpen you"},
+{id:"mind",nm:"Mind / Thought Life",ico:"\u26A1",vs:"Romans 12:2",ds:"The battlefield where the real war is fought"},
+{id:"body",nm:"Body / Stewardship",ico:"\uD83E\uDEA8",vs:"1 Corinthians 6:19-20",ds:"Health, discipline, energy"},
+{id:"finances",nm:"Finances / Provision",ico:"\uD83D\uDCD0",vs:"Malachi 3:10",ds:"What comes in, what goes out, what\u2019s being built"}
+];
+var F=[
+{id:"adoration",nm:"Adoration",n:"01",hex:"#FFD97A",ds:"Declaring who God is before bringing any need"},
+{id:"confession",nm:"Confession",n:"02",hex:"#C4A882",ds:"Naming drift and realigning to the standard"},
+{id:"thanksgiving",nm:"Thanksgiving",n:"03",hex:"#34EDAA",ds:"Specific, named gratitude for what He has done"},
+{id:"supplication",nm:"Supplication",n:"04",hex:"#6CB4FF",ds:"Direct, specific asks for specific needs"},
+{id:"intercession",nm:"Intercession",n:"05",hex:"#B496FF",ds:"Standing before God on behalf of others"},
+{id:"declaration",nm:"Declaration",n:"06",hex:"#FFB830",ds:"Speaking what God has already said \u2014 out loud"},
+{id:"warfare",nm:"Warfare",n:"07",hex:"#FF5555",ds:"Targeted spiritual confrontation of opposition"}
+];
+var MAP = {
+identity: {
+adoration: {
+scripture: "Psalm 139:14",
+text: "I praise You because I am fearfully and wonderfully made; Your works are wonderful, I know that full well.",
+prayer: `Father, before I bring You a single request \u2014 before I open the pipeline, before I think about the floor, before I consider what today demands \u2014 I come to declare who You are. You are the God who formed me in the womb. Not a version of me that I curated, not the persona I walk into the building with, not the image people see when I'm closing \u2014 the real me. The one underneath the performance. You saw that man before anyone else did, and You called him good. You are the architect of my identity, and I worship You for that.
+
+You are not a God who makes mistakes. Every capacity I carry \u2014 the ability to read a room, the instinct to lead, the drive that won't let me coast \u2014 those aren't accidents. They're Your fingerprints. And the parts I want to hide \u2014 the parts that drift, the parts that get tired, the parts that doubt \u2014 You saw those too, and You still chose me. I worship You for that kind of knowledge. The kind that sees everything and still says 'mine.'
+
+You are holy. Set apart. Completely other. And somehow You invited me into proximity with You. Not because of my sales numbers, not because of my discipline, not because I built a system that runs well \u2014 but because You decided to. That is the most stabilizing truth I carry, and I worship You for it before this day starts.
+
+I declare Your supremacy over everything that will compete for the throne today. My performance will try to sit there. My reputation will try to sit there. My anxiety will try to sit there. But the throne belongs to You and only You. I worship the God who is above my best day and my worst day equally \u2014 because neither one changes who You are.`
+},
+confession: {
+scripture: "Psalm 51:10",
+text: "Create in me a pure heart, O God, and renew a steadfast spirit within me.",
+prayer: `God, I come to You honestly. Not with the polished version, not with the leadership posture \u2014 with the real one. And the real one drifted.
+
+Where I derived my worth from my close rate \u2014 where I let a good day make me feel like a good man and a bad day make me feel like a fraud \u2014 I confess that. That's idolatry dressed up as work ethic, and I name it for what it is. My value was settled at the cross, not at the close table. Where I forgot that, I repent.
+
+Where I wore a mask \u2014 where I showed strength to the team but carried unprocessed weight internally, where I projected confidence in a conversation but was operating from insecurity underneath \u2014 I bring that into the light. You don't need the cleaned-up version of me. You need the honest one. And the honest one was performing in places where he should have been resting in who You already said he is.
+
+Where I compared myself to other men \u2014 measured my progress against someone else's timeline, let another man's success feel like my failure \u2014 I confess that. You didn't make me to be them. You made me to be me, fully, without apology, without comparison. That comparison game is a trap and I've stepped in it more times than I want to admit. I'm naming it. I'm leaving it.
+
+Renew what drifted. Not with a fresh coat of motivation \u2014 with a steadfast spirit. The kind that doesn't need external validation to stay centered. Create that in me today. Not the appearance of purity \u2014 actual purity of motive, thought, and posture. I can't manufacture that. Only You can create it. So I'm asking You to do what only You can do.`
+},
+thanksgiving: {
+scripture: "Ephesians 1:3-4",
+text: "He chose us in Him before the creation of the world to be holy and blameless in His sight.",
+prayer: `Thank You, Father, for the most stabilizing fact in my life: that my identity was settled before I ever performed. Before I closed my first deal, before I led my first team, before I said my first prayer \u2014 You had already chosen me. That wasn't contingent on what I'd become. It was decided before the foundation of the world. I thank You for that.
+
+Thank You that on the days I miss the mark \u2014 and there have been days, You know every one of them \u2014 who I am in You does not change. My performance fluctuates. My energy fluctuates. My discipline fluctuates. But my standing in You is fixed. It's an anchor point that nothing on the floor, nothing in the relationship, nothing in my own head can move. I am grateful for that kind of security, because I couldn't build it myself.
+
+Thank You for the specific moments recently where You reminded me of this. The moment after a hard shift where something in my spirit said 'you're still Mine.' The moment in prayer where the weight lifted \u2014 not because the circumstances changed, but because You reminded me that circumstances don't define me. The quiet moments where I just knew, without performance, without proof, that I belong to You. Those moments are gifts and I refuse to take them for granted.
+
+Thank You that holiness is not something I achieve \u2014 it's something You declared over me. Blameless in Your sight. Not because I'm perfect. Because the blood covers what I can't fix. That's grace, and I thank You for it by name today. I could spend the rest of this prayer just thanking You for grace and I wouldn't run out of material.`
+},
+supplication: {
+scripture: "Ephesians 3:16-17",
+text: "I pray that out of His glorious riches He may strengthen you with power through His Spirit in your inner being, so that Christ may dwell in your hearts through faith.",
+prayer: `Father, strengthen my inner man today. I'm not asking for a better pitch. I'm not asking for more energy on the floor. I'm asking for something deeper \u2014 the kind of inner strength that holds when external conditions don't cooperate.
+
+Strengthen the part of me that nobody sees. The part that exists before I walk into the building. The part that's still standing at 11pm when the day is over and there's no one left to perform for. That's the man I need You to build today. Not the public-facing version \u2014 the private one. Because if the private man is weak, the public man is a lie.
+
+I need rootedness. The kind that doesn't bend when the shift goes sideways, when a deal falls through, when a conversation lands wrong, when my own mind turns against me. I need roots that go deep enough into who You say I am that surface-level disruptions can't uproot me. Not deep enough to survive \u2014 deep enough to stand.
+
+Let Christ dwell in my heart through faith \u2014 not through feeling. I don't always feel confident. I don't always feel chosen. I don't always feel like the man You're calling me to be. But I'm asking that faith holds where feeling fails. That I would operate today from the truth of who I am, not the fluctuation of how I feel.
+
+Give me that power through Your Spirit. Not willpower \u2014 Spirit-power. The kind that produces steadiness, not intensity. The kind that makes a man unshakeable without making him rigid. I need that today, and I'm asking directly. Don't let me walk onto that floor running on fumes when You've offered me fuel.`
+},
+intercession: {
+scripture: "3 John 1:2",
+text: "Dear friend, I pray that you may enjoy good health and that all may go well with you, even as your soul is well.",
+prayer: `Father, I stand before You right now on behalf of every man I know who is trying to figure out who he is apart from what he produces.
+
+I pray for the reps on my floor who think they are their numbers. The ones who are riding high when the board looks good and falling apart when it doesn't. They don't know it yet, but they're building their identity on sand \u2014 and it will shift. Give them a revelation of who they are apart from the close. Open their eyes to the fact that their value was established before they ever picked up a phone. Use me as part of that revelation if You want \u2014 I'm willing.
+
+I pray for the men in my life who are wearing masks. The ones who show strength publicly but are drowning privately. The ones who answer 'I'm good' when they're not, because they don't have a space safe enough to say the truth. Create that space for them. If I'm meant to be part of that \u2014 show me. If they need someone else \u2014 send that person. But don't let them stay isolated in their performance.
+
+I pray for young men who have no model of identity that isn't performance-based. The ones who grew up believing they are what they achieve, what they earn, what they attract. Break that lie over them. Replace it with the truth that they were known and chosen before they ever accomplished a thing. Raise up fathers and mentors who model a settled identity \u2014 not a performed one.
+
+I pray for my own future sons \u2014 whether biological or the men I'm meant to mentor. Let me model an identity that doesn't crack under pressure, not because I'm tough, but because I'm rooted. Let them see a man who knows who he is because he knows whose he is. That's the inheritance I want to pass down. Not money. Not reputation. Identity.`
+},
+declaration: {
+scripture: "2 Corinthians 5:17",
+text: "Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!",
+prayer: `I declare over my life today: I am a new creation in Christ. The old man \u2014 the one who performed for approval, the one who needed the room to validate him, the one who measured his worth by his last close, his last conversation, his last win \u2014 that man is dead. He doesn't get a vote today. He doesn't get a seat at the table. He doesn't get to whisper in my ear about what I should be afraid of.
+
+I am who God says I am. I am chosen \u2014 Ephesians 1:4. I am redeemed \u2014 Ephesians 1:7. I am sealed by the Holy Spirit \u2014 Ephesians 1:13. I am God's workmanship, created for good works that He prepared in advance \u2014 Ephesians 2:10. None of that is up for renegotiation today. None of that is contingent on how the shift goes, how the conversation goes, or how I feel when I wake up.
+
+I declare that I am not defined by my worst moment. I am not defined by my last failure. I am not defined by the opinion of anyone on that floor, in that relationship, or in my own head. I am defined by the blood of Christ and the word of God, and that definition is final. It is not under review. It is not pending approval. It is finished.
+
+I walk into today as a man who knows who he is. Not arrogantly \u2014 anchored. Not performing \u2014 operating from a settled core. My identity is not fragile. It doesn't depend on today's results. It was forged before I was born and it will hold long after today is over.
+
+This is not who I'm trying to become. This is who I already am. I declare it, I believe it, and I will walk in it with my full chest today.`
+},
+warfare: {
+scripture: "Romans 8:1",
+text: "There is now no condemnation for those who are in Christ Jesus.",
+prayer: `In the name of Jesus, I come against every spirit of condemnation, shame, and identity assault that has targeted me \u2014 whether it came in the night, in a quiet moment, or in the middle of a shift when something triggered the old voice.
+
+I reject the lie that says I am not enough. I identify that thought. I trace it back to its source \u2014 and its source is not God, because God says there is no condemnation for those in Christ. That lie came from the enemy, and I refuse to entertain it for one more second. It has no authority over me. It has no evidence that holds up against the cross. I dismiss it.
+
+I reject the lie that says my past disqualifies me. Every mistake, every failure, every moment I'm ashamed of \u2014 the blood covers it. Not partially. Not conditionally. Completely. The enemy wants me to live in a courtroom where the verdict has already been delivered. I refuse. The case is closed. The gavel has fallen. Not guilty. I will not reopen what God has sealed.
+
+I bind the spirit of performance-based identity. The one that says 'you're only as good as your last close.' The one that makes me feel valuable on a good day and worthless on a bad one. That spirit is a liar and it's evicted from my thinking. My identity doesn't fluctuate with my output. It's anchored to a finished work on a cross, and no quarterly review changes that.
+
+I bind every voice \u2014 internal or external \u2014 that tries to define me by anything other than what God has declared. I loose the truth of Romans 8:1 over my mind, my emotions, and my self-perception. No condemnation. Not reduced condemnation. Not condemnation-with-conditions. None. That's the standard, and I enforce it right now. Today, I walk free.`
+},
+},
+
+vocation: {
+adoration: {
+scripture: "Psalm 24:1",
+text: "The earth is the LORD's, and everything in it, the world, and all who live in it.",
+prayer: `God, before I walk onto that floor today, I need to establish something: that floor is Yours. Every desk, every phone, every whiteboard, every deal on the pipeline \u2014 it belongs to You. I'm the steward. I'm the manager. But I'm not the owner. You are. And I worship You for the clarity that distinction gives me.
+
+You are the God who placed me in this seat \u2014 not because I applied for it in heaven, but because You had a purpose for a man with my wiring in this exact role at this exact time. I worship You for that placement. It wasn't accidental. It wasn't a consolation prize. It was strategic. You put a closer in a closing seat, a leader in a leadership seat, and I worship You for knowing exactly what You were doing when You put me here.
+
+You are sovereign over the market, over the leads, over the clients who will walk through that door or pick up that phone today. I can't control who shows up. I can't manufacture urgency that isn't there. But You are sovereign over all of it \u2014 and I worship You for that sovereignty, because it means I'm not carrying the weight of outcomes I can't control. I carry the process. You carry the results. That division of labor is the only thing that keeps this role sustainable.
+
+You are the God who gave me the ability to sell. The instinct to read people, the discipline to follow a system, the capacity to hold a room and command attention without demanding it \u2014 those are gifts from You, not accomplishments I built in isolation. Every close I've ever gotten started with a capacity You deposited. I worship You as the source of my vocational ability, and I refuse to forget the source today.`
+},
+confession: {
+scripture: "Proverbs 3:5-6",
+text: "Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to Him, and He will make your paths straight.",
+prayer: `Father, I confess that I don't always trust You on the floor. I say I do. I believe I do in the morning. But when the shift starts and the board is empty and the energy is flat \u2014 I lean on my own understanding. I start scheming instead of trusting. I start forcing instead of flowing. I confess that as functional unbelief dressed in hustle clothing.
+
+Where I took credit for closes You orchestrated \u2014 where the lead came in hot, the timing was perfect, the client was ready, and I acted like my pitch was the reason \u2014 I repent. That was Your setup and I received it like it was my doing. Forgive me for the arrogance of forgetting You in the middle of the provision. The provision came from You. The platform came from You. The breath in my lungs while I was pitching came from You. I won't act like I did it alone.
+
+Where ego drove a conversation that should have been servant-led \u2014 where I was more concerned with looking competent than actually helping the person across from me \u2014 I name that. A leader under Your authority doesn't perform for the room. He serves the room. Where I reversed that order, I confess it and I ask You to flip it back.
+
+Where I neglected my team because I was focused on my own production \u2014 where I chose the close over the coaching moment, where I let a rep struggle because I was too busy to stop \u2014 I own that. You didn't put me in leadership so I could out-produce my team. You put me in leadership so I could multiply what You've deposited in them. Where I forgot that, realign me. My job is not to be the best closer on the floor. My job is to build a floor full of closers.
+
+Where I complained about my role, my company, my conditions \u2014 instead of committing everything to You as Colossians 3:23 commands \u2014 I confess it. This seat is a gift. I will treat it like one today.`
+},
+thanksgiving: {
+scripture: "Deuteronomy 8:18",
+text: "But remember the LORD your God, for it is He who gives you the ability to produce wealth, and so confirms His covenant.",
+prayer: `Thank You, God, for the ability to produce. Not just income \u2014 capacity. The ability to walk into a room and lead it. The ability to take a cold conversation and turn it into a commitment. The ability to see potential in a rep who doesn't see it in himself yet. Those are abilities You gave me, and I refuse to treat them as self-made accomplishments. You gave me the raw material and You gave me the arena. I'm grateful for both.
+
+Thank You for this team. Every single person on that floor \u2014 the ones who are grinding, the ones who are coasting, the ones who are struggling \u2014 they are my assignment. Thank You for the weight of that responsibility, because it keeps me from becoming self-focused. A man who only builds for himself builds small. Thank You for giving me people to build for and a purpose bigger than my personal production.
+
+Thank You for every deal that closed this week. I remember them specifically. I name them before You and I trace every one of them back to Your hand. The timing wasn't mine. The referral wasn't mine. The client's readiness wasn't mine. I did the work \u2014 but You opened the doors that the work walked through. I will not separate the work from the grace.
+
+Thank You for the deals that didn't close. The ones that fell through, the no-shows, the cancellations. Thank You for those too \u2014 because they kept me dependent. They reminded me that I don't control the outcome. They pushed me back to prayer instead of letting me coast on momentum. The losses were as formative as the wins, and I thank You for both.
+
+Thank You for this industry, this company, this season. I don't know how long I'll be in this exact seat \u2014 but while I'm here, I will steward it with the gratitude it deserves. Not entitled gratitude. Active gratitude. The kind that shows up in effort, in attitude, and in how I treat the people around me.`
+},
+supplication: {
+scripture: "James 1:5",
+text: "If any of you lacks wisdom, let him ask God, who gives generously to all without finding fault, and it will be given to him.",
+prayer: `Father, I need wisdom for today's floor. Not confidence \u2014 I can manufacture that. Not energy \u2014 caffeine handles that. Wisdom. The kind that sees what I can't see on my own. The kind that James says You give generously, without finding fault. I'm coming to collect on that promise right now.
+
+Show me which rep needs a direct conversation today. Not a group announcement \u2014 a one-on-one, face-to-face moment where I speak to their specific situation. I don't always know who that is. You do. Point me to them and give me the words when I get there. Not a script \u2014 the right words for that person in that moment. The kind of words that unlock something.
+
+Show me which deal needs a different angle. Where am I pushing a strategy that isn't working? Where am I being stubborn about an approach because it worked last time when this situation is different? Give me fresh eyes on the pipeline. Let me see what I've been too close to notice. I need the kind of perspective that only comes from outside my own thinking.
+
+Show me where the energy is leaking on my floor. Is it a person? A process? A cultural issue I haven't addressed? A conversation I've been avoiding? I can feel when something's off but I can't always diagnose it. I need Your discernment to identify the source \u2014 not just the symptom \u2014 and address it like a leader, not a reactor. Leaders solve root causes. Reactors chase symptoms. Make me the former today.
+
+Give me the ability to make decisions quickly and correctly today. I don't have the luxury of analysis paralysis on the floor. Things move fast. Clients change their minds. Reps hit walls. Opportunities flash and disappear. I need a clarity of thought that comes from You \u2014 the kind James talks about, given generously, without finding fault. I'm asking generously. Meet me generously.`
+},
+intercession: {
+scripture: "1 Thessalonians 5:12-13",
+text: "Now we ask you, brothers and sisters, to acknowledge those who work hard among you, who care for you in the Lord and who admonish you.",
+prayer: `Father, I stand in the gap for my team right now. Every rep walking onto that floor today carries something I may not know about. A fight at home. A financial crisis. A crisis of confidence they'll never mention. A decision they're wrestling with that has nothing to do with sales. I may not see it \u2014 but You do. Cover them. Meet them where they actually are, not just where they appear to be.
+
+I pray for the ones who are grinding \u2014 the ones who show up early, stay late, make the calls, follow the process without being told. Don't let them burn out. Don't let the grind become joyless. Sustain their energy and reward their faithfulness. Let them see fruit today that matches the effort they've been planting. They deserve to eat from the seeds they've sown.
+
+I pray for the ones who are coasting. And I say that with compassion, not contempt \u2014 because I've coasted too. I know what it feels like to go through the motions. Wake them up, but do it with grace. Let today be the day something clicks \u2014 a conversation, a miss, a moment of clarity \u2014 that reminds them of what they're capable of. Don't let them settle into mediocrity when You designed them for production.
+
+I pray for the ones who are struggling. The ones who are thinking about quitting. The ones who are questioning whether they're in the right seat. The ones who look at the board and feel like they'll never catch up. Give them endurance. And give me the wisdom to know the difference between a rep who needs encouragement and a rep who needs redirection. Both exist on my floor and they need different things from me.
+
+I pray for leadership above me. Whoever is making decisions that affect my team, my building, my resources \u2014 give them wisdom. Align their decisions with Your purposes. And where their decisions are hard for me to support, give me the maturity to lead well underneath authority I didn't choose. That's a leadership test in itself.
+
+Let this floor produce today. Not for the scoreboard \u2014 for the mission. Every close represents a family served, a need met, a promise kept. Let my team carry that weight with honor, not just hustle.`
+},
+declaration: {
+scripture: "Deuteronomy 28:13",
+text: "The LORD will make you the head, not the tail. If you pay attention to the commands of the LORD your God... you will always be at the top, never at the bottom.",
+prayer: `I declare over my vocation today: my floor leads. We are not average. We are not middle of the pack. We are not surviving \u2014 we are producing. God has placed His blessing on the work of my hands, and that blessing doesn't take days off. It doesn't check the weather. It doesn't wait for a good lead.
+
+I declare that whatever I put my hand to today prospers \u2014 not because I'm the best closer in the room, but because the God I serve is faithful to His word, and His word says the head and not the tail. I don't chase the standard. I set it. Not from arrogance \u2014 from alignment. When I'm aligned with God's purposes for my role, production is the natural result. When I'm out of alignment, no amount of technique compensates.
+
+I declare over my team: these reps are not random. They were placed on this floor for a reason. God put potential in every seat, and the potential in this room is greater than what the board has shown so far. I speak life over every seat. I speak hunger over every rep. I speak focus over every conversation that happens today. What comes out of this floor today will surprise people who've been sleeping on us.
+
+I declare that no-shows, cancellations, and dead leads do not define this shift. They are obstacles, not verdicts. The shift is not over until it's over, and I will not speak death over it at halftime. I refuse to eulogize a day that's still alive. Whatever comes through that door today meets a team that is prepared, hungry, and operating under blessing.
+
+I declare Colossians 3:23 over every call, every pitch, every close, and every coaching conversation: whatever I do, I work at it with all my heart, as working for the Lord. The standard is not the company's expectation. The standard is heaven's expectation. And I will meet it today with everything I have.`
+},
+warfare: {
+scripture: "Isaiah 54:17",
+text: "No weapon forged against you will prevail, and you will refute every tongue that accuses you.",
+prayer: `In the name of Jesus, I come against every spirit of confusion, distraction, passivity, and sabotage that would try to operate on my floor today.
+
+I bind confusion. When deals that were solid suddenly go sideways for no logical reason \u2014 that's not just business. I recognize the spiritual dimension and I address it directly. Clarity reigns in this building. Every rep thinks clearly. Every conversation tracks. Every decision is sound. Confusion is not welcome here and it has no legal right to stay.
+
+I bind distraction. The phones that buzz at the wrong moment. The personal drama that follows someone onto the floor. The mental noise that pulls a rep out of the conversation they're in. The side conversations that drain focus from the main mission. I command focus over this space. When my team sits down, they are present. Fully engaged. Locked in.
+
+I bind passivity. The voice that says 'it's going to be a slow day.' The energy that accepts defeat before the first pitch is made. The posture that sits back and waits for something to happen instead of making something happen. That spirit is a liar and it is not welcome here. I loose hunger, urgency, and aggressive pursuit of every opportunity that walks through the door.
+
+I bind the spirit of cancellation. Every deal on today's board that the enemy wants to kill \u2014 I cover it. The client who was ready yesterday doesn't wake up confused today. The show that was confirmed stays confirmed. The close that was earned gets collected. I refuse to surrender production to invisible interference. What was promised to this floor is delivered to this floor.
+
+I loose the favor of God over this shift. I loose divine appointments \u2014 clients who are ready, willing, and able, matched with reps who are prepared to serve them. I loose an atmosphere of excellence, of expectation, of faith on this floor. The kind of atmosphere where good things happen because the environment was prepared for them.
+
+No weapon formed against this team today will prosper. Not gossip. Not fatigue. Not drama. Not discouragement. Not a slow pipeline. Not a bad break. We are covered. We are commissioned. We produce. That is not a hope \u2014 it's a declaration.`
+},
+},
+
+relationship: {
+adoration: {
+scripture: "Genesis 2:18",
+text: "The LORD God said, 'It is not good for the man to be alone. I will make a helper suitable for him.'",
+prayer: `Father, I worship You as the author of covenant. This desire in me \u2014 to build with a woman, to share life, to be known fully and to fully know \u2014 it didn't come from culture. It didn't come from loneliness. It came from You. You looked at Adam \u2014 a man who had purpose, provision, and direct access to God \u2014 and You said 'it's not good for him to be alone.' That means the desire for partnership was Your idea before it was ever mine, and I worship You for designing it.
+
+You didn't just create the concept of relationship \u2014 You designed the architecture for how it works. Sacrifice. Service. Patience. Vulnerability. Covering weakness instead of exploiting it. All of it is Your blueprint. The world distorted it, twisted it, cheapened it \u2014 but the original design is Yours, and it's good. It's better than good. It's sacred.
+
+I worship You as the God who is restoring what was broken. You didn't look at our situation and say 'that's too far gone.' You are a God of restoration \u2014 not just survival, not just coexistence, but actual rebuilding from the foundation up. Ezekiel 36 restoration. Valley of dry bones restoration. You specialize in making dead things live again, and I worship You because what I see with my eyes isn't what You see. You see the finished product. I'm still standing in the construction site. I trust the architect more than I trust the mess.
+
+You are faithful in this area even when I wasn't. Your commitment to what You started doesn't depend on my consistency. It depends on Yours. And Yours is flawless. I worship You for a faithfulness that outlasts my failures and a patience that outlasts my impatience.`
+},
+confession: {
+scripture: "Ephesians 4:26-27",
+text: "In your anger do not sin. Do not let the sun go down while you are still angry, and do not give the devil a foothold.",
+prayer: `Father, I come to You with honesty about where I've fallen short in this relationship \u2014 not to beat myself up, but to realign before drift becomes damage.
+
+Where I led from frustration instead of patience \u2014 where she needed a coach and I showed up as a closer \u2014 I confess that. I know the difference. I teach the difference on my floor. But in the moment, when emotions were high and the conversation wasn't tracking the way I wanted it to, I defaulted to the posture that gets results in business instead of the posture that builds trust in relationship. That wasn't leadership. That was control wearing a leadership mask. I own it.
+
+Where I expected her to match my velocity \u2014 to process at my speed, recover at my pace, engage with the same intensity I bring \u2014 I confess that as unfair and un-Christlike. She is not a rep on my floor. She is a person with her own rhythm, her own wounds, her own processing speed that God gave her. Where I treated her pace as resistance instead of honoring it as her process, I repent. I don't get to set the timeline for her healing.
+
+Where my words carried edge \u2014 where sarcasm crept in, where tone communicated disappointment instead of grace, where I said the right thing the wrong way and wondered why it didn't land \u2014 I bring that to You. Proverbs says a soft answer turns away wrath. Where my answer wasn't soft, the escalation was partially mine. I own my contribution to every hard conversation, and I bring it here.
+
+Where I let the sun go down angry \u2014 where I carried unresolved tension into the night instead of pressing through to resolution, where I let silence become a wall instead of a bridge \u2014 I confess that I gave the enemy a foothold. Not intentionally. But intention doesn't matter when the door is open. Close it. Seal what I left open. Protect what we're building from the cracks I created.`
+},
+thanksgiving: {
+scripture: "Proverbs 18:22",
+text: "He who finds a wife finds what is good and receives favor from the LORD.",
+prayer: `Father, thank You. Specifically. Not in general \u2014 specifically.
+
+Thank You that she said yes to the process. When I came to her with the eight-week plan \u2014 structured, detailed, asking her to commit to something that required vulnerability and consistency on both sides \u2014 she didn't have to say yes. That wasn't owed to me. She chose to engage. That choice was grace, and I name it as such. I don't take it for granted. I don't treat it as expected. It was a gift and I receive it with open hands.
+
+Thank You for the conversations that have landed. The ones where we both showed up honest. The ones where she said something I needed to hear and I was mature enough to receive it. The ones where I said something that actually reached her \u2014 not because my words were perfect, but because You gave me the right ones at the right time. Those moments are evidence that this process is working. They're proof of concept. Thank You for the proof.
+
+Thank You for her courage. Restoration isn't easy for anyone, but it's especially hard for the one who was hurt. She is choosing to stay in a process that requires her to be vulnerable with the same person who caused the wound. That takes a kind of courage that I need to honor more, not less. Thank You for putting that strength in her. It humbles me.
+
+Thank You for the moments of connection \u2014 the ones that reminded us why we're doing this. The laugh that caught us both off guard. The look that said more than a conversation could. The moment where it felt like us again \u2014 not the wounded version, but the real version. Thank You for those glimpses of what You're building. They fuel the process when the process gets hard.
+
+Thank You that this story isn't over. The chapter is still being written. And I'm grateful that I get to be part of what You're authoring.`
+},
+supplication: {
+scripture: "Colossians 3:12-14",
+text: "Therefore, as God's chosen people, holy and dearly loved, clothe yourselves with compassion, kindness, humility, gentleness and patience.",
+prayer: `Father, give me patience today. Real patience \u2014 not the kind where I'm quietly waiting for her to catch up to where I already am, but the kind where I genuinely honor her pace, her process, and her way of engaging. I know the difference between performed patience and real patience. Help me live the real version today.
+
+Give me the right words tonight. Not more words \u2014 the right ones. Show me what to say and what to leave unsaid. Show me when to lead the conversation and when to create space for her to lead it. I have a tendency to fill silence with structure \u2014 and sometimes she needs the silence more than the structure. Give me the discernment to know which moment is which. That discernment doesn't come naturally to me. I'm asking for it supernaturally.
+
+Help me lead this restoration like a coach, not a closer. A coach paces the person. A coach watches for readiness. A coach doesn't force the next play before the current one is complete. I know this principle \u2014 I built the eight-week plan on it \u2014 but in the moment, when I'm anxious about progress, I default to closing. Catch me before I do that. Redirect me in real time. Whisper 'slow down' before I speed up.
+
+Give me eyes to see what she needs that she hasn't said. She doesn't always verbalize what's happening internally \u2014 and I can't expect her to be as direct as I am. But You see it. Point me toward it. If she needs reassurance, let me give it without being asked. If she needs space, let me give it without taking it personally. If she needs to see change in me \u2014 not just hear about it \u2014 show me the specific behavior that would make the invisible visible.
+
+Clothe me in compassion, kindness, humility, gentleness, and patience. Not as a personality adjustment \u2014 as armor. Because the version of me that shows up to this relationship unclothed in those things is the version that does damage. I've seen that version. I don't want him showing up tonight. Dress me before I engage.`
+},
+intercession: {
+scripture: "Philippians 1:6",
+text: "Being confident of this, that He who began a good work in you will carry it on to completion until the day of Christ Jesus.",
+prayer: `Father, I lift her up to You right now. Not as a project, not as a variable in my plan, not as someone I need to fix \u2014 as a woman You love independently of her relationship with me. Your love for her doesn't flow through me. It flows directly from Your heart to hers. And right now, I'm asking You to pour it out.
+
+Cover her heart. She is carrying weight from this process that I can't fully see and may not fully understand. The restoration journey asks her to trust someone who broke trust. That's not a small ask. It might be the hardest thing she's ever done. Strengthen her for it. Not so that my plan works \u2014 so that she's okay. Her wellbeing matters to me more than the outcome. Let that be true in my actions, not just my words.
+
+Give her peace today. Whatever she's processing \u2014 about us, about herself, about the future, about whether this is worth it \u2014 let Your peace be present in it. Not the peace that comes from having answers, but the peace that comes from knowing You're in the middle of the process even when the process feels uncertain.
+
+Protect her from bitterness. The enemy would love nothing more than to take the wound and harden it into resentment that becomes permanent. Don't let that happen. Keep her heart soft \u2014 not naively, but courageously. There is a kind of softness that is actually the strongest thing in the room, and I pray she carries that kind.
+
+Give her the courage to stay honest with me. Even when it's uncomfortable. Even when she's afraid of how I'll respond. Let her know \u2014 through my behavior, not just my words \u2014 that her honesty is safe with me. That I can handle the truth about how she's feeling, even when the truth is hard to hear. Especially when it's hard to hear.
+
+Complete the work You began. Not just in the relationship \u2014 in her personally. Whatever You're growing in her through this season, bring it to fullness. She deserves to come out of this process not just restored, but expanded. Bigger than before. Stronger than before. More certain of who she is than before. I pray for that with everything in me.`
+},
+declaration: {
+scripture: "Ecclesiastes 4:12",
+text: "Though one may be overpowered, two can defend themselves. A cord of three strands is not quickly broken.",
+prayer: `I declare over this relationship today: we are a three-strand cord \u2014 her, me, and God. And a cord of three strands is not quickly broken. Not slowly broken. Not eventually broken. Not quickly broken. That's the word I'm standing on, and I will not be moved from it.
+
+I declare that the restoration process we are in will complete what it started. Philippians 1:6 says He who began a good work will carry it to completion \u2014 and God began this work. Not me. I presented the plan. I built the framework. But the impulse to restore, the capacity to rebuild, the willingness in both of us to stay in the process when quitting would be easier \u2014 that's God's initiation, and what He initiates, He finishes.
+
+I declare that what God is building between us is stronger than what tried to break it. The wound was real. The pain was real. The breach of trust was real. I don't minimize any of it. But I declare that the God of restoration does not build back to the original \u2014 He builds back better. The rebuilt version of this relationship has a foundation the original didn't have, because now it's built on honesty, accountability, and covenant process \u2014 not just chemistry and good intentions.
+
+I declare that this relationship is not defined by its worst season. It's defined by the God who is writing the story. And His stories don't end at the conflict \u2014 they end at the redemption. That's where we're headed.
+
+I declare patience over myself and grace over her. I declare honest communication, mutual respect, and forward motion. I declare that we will not be another statistic. We will be a testimony. The kind of story that gives other couples the courage to do the hard work instead of walking away.`
+},
+warfare: {
+scripture: "Mark 10:9",
+text: "Therefore what God has joined together, let no one separate.",
+prayer: `In the name of Jesus, I come against every force \u2014 visible and invisible \u2014 that is working to sabotage what God is restoring in this relationship.
+
+I bind miscommunication. The kind where the right intention gets received as the wrong message. The kind where tone distorts truth. The kind where both of us walk away from a conversation with a different interpretation of what just happened. I bind confusion from our dialogue and I loose clarity, charity, and mutual understanding over every word between us.
+
+I bind the resurfacing of old wounds at strategic moments. The enemy knows exactly when to remind her of the hurt \u2014 right when trust is building, right when vulnerability is happening, right when progress is being made. I recognize that strategy and I shut it down. The past is addressed. The process is handling it. The wounds do not get to ambush the progress. I refuse to let yesterday's pain assassinate tomorrow's restoration.
+
+I bind isolation. The voice that tells her 'he won't really change.' The voice that tells me 'she'll never fully forgive.' Those are lies designed to separate us when we're supposed to be fighting together, not against each other. I reject both lies. I bind them from our minds and I loose the truth: that restoration is possible, that change is happening, and that God is in the middle of this whether it feels like it today or not.
+
+I bind every external influence that undermines what we're building. Voices from outside this covenant that speak doubt, comparison, or cynicism \u2014 well-meaning or otherwise \u2014 they are not welcome in this process. This is between her, me, and God. No outside commentary gets to overrule the three-strand cord.
+
+I loose unity. I loose trust \u2014 rebuilt, tested, proven trust. I loose forward motion \u2014 not perfection, but genuine progress that we can both see and name. I loose the covering of God over every conversation, every date, every hard moment, and every good one. What God has joined together, no force on earth or under the earth will separate. I enforce that right now, and I will enforce it every day this process continues.`
+},
+},
+
+brotherhood: {
+adoration: {
+scripture: "Psalm 133:1",
+text: "How good and pleasant it is when God's people live together in unity!",
+prayer: `Father, You designed brotherhood. You looked at the way men are built \u2014 the isolation we default to, the masks we wear, the way we try to carry everything alone because we think that's what strength looks like \u2014 and You said 'that's not how this works.' Iron sharpening iron wasn't a suggestion or a nice idea for a men's retreat theme. It was Your architecture for how men are formed, refined, and sustained. I worship You for the design.
+
+You are a relational God. Father, Son, Spirit \u2014 community is in Your very nature. You didn't create brotherhood because we're weak. You created it because it reflects who You are. When I sit across from Craig and tell the truth about where I'm at \u2014 that's a reflection of divine design in action. When Uncle Bobby speaks into my life with authority and love \u2014 that's Your voice through a human channel. I worship You for building the system that way, for choosing to work through people instead of just working solo.
+
+You are faithful through the men You've placed around me. Not every man gets this. Not every man has a brother who will pick up the phone at midnight and listen without judging. Not every man has an elder who speaks truth without agenda, who invests without expectation of return. I have both. That's not coincidence \u2014 that's provision as intentional as any deal You've ever closed on my behalf. I worship You for providing what I didn't even know how to ask for until I had it.`
+},
+confession: {
+scripture: "Galatians 6:2",
+text: "Carry each other's burdens, and in this way you will fulfill the law of Christ.",
+prayer: `Father, I confess that I don't always let my brothers in. I preach vulnerability. I coach it on my floor. I built an entire system around honest self-assessment. But when it comes to picking up the phone and saying 'I'm not okay' to another man \u2014 I still hesitate. I still edit the truth. I still give the version that protects my image instead of the version that invites real help. I confess that as pride, and I turn from it today.
+
+Where I carried weight alone that I should have shared \u2014 where I processed a hard day internally instead of calling Craig, where I sat with a decision I didn't have clarity on instead of asking Uncle Bobby, where I chose the isolation of 'figuring it out myself' over the humility of asking \u2014 I own that. You gave me brothers for a reason. Refusing to use the provision is the same as refusing the provision itself. I confess it as stubborn independence, and I release it.
+
+Where I withheld the truth from a brother because it was easier \u2014 where I saw something in a friend that needed to be addressed and I stayed silent because I didn't want the discomfort of the conversation \u2014 I confess that as a failure of love. Proverbs 27:6 says faithful are the wounds of a friend. Where I chose comfort over faithfulness, I failed the assignment of brotherhood.
+
+Where I took from the brotherhood without pouring back in \u2014 where I received counsel, support, and presence without asking what my brothers needed in return \u2014 I confess that as one-directional living. Brotherhood is mutual. It's a two-way street. Where I drove only one direction, realign me. Show me who needs me to show up the way they've shown up for me.`
+},
+thanksgiving: {
+scripture: "Proverbs 27:17",
+text: "As iron sharpens iron, so one person sharpens another.",
+prayer: `Thank You, Father, for Craig. Specifically. By name. Thank You for a brother who will tell me the truth when I need it, not just what I want to hear. Thank You for the conversations that were uncomfortable \u2014 the ones where he pushed back on something I was convinced about, the ones where he asked the question I was avoiding, the ones that didn't feel good in the moment but corrected my trajectory. That kind of honesty is rare and getting rarer. I won't take it for granted.
+
+Thank You for Uncle Bobby. Thank You for an elder who carries spiritual weight and shares it generously without condescension. Thank You for his experience, his patience, his willingness to invest in a man who's still being built. Not every young man has access to that kind of wisdom from someone who's walked the road ahead of them. I do. That's a gift I didn't earn.
+
+Thank You for every hard conversation that sharpened me. The ones where I was wrong and had to sit with it. The ones where a brother saw a blind spot I couldn't see and had the courage to point at it even though it might cost the friendship. Those moments are the iron-on-iron that Proverbs describes, and they hurt in real time \u2014 but they produced something in me that comfort never could have produced.
+
+Thank You for the men who showed up when outside support didn't meet the moment. You know the specific times. The moments where I needed someone and the expected sources fell through. And then a brother stepped into the gap \u2014 not because it was convenient for them, but because that's what covenant brothers do. Thank You for that kind of reliability. It's one of the clearest reflections of Your faithfulness I've experienced in human form.`
+},
+supplication: {
+scripture: "Ecclesiastes 4:9-10",
+text: "Two are better than one, because they have a good return for their labor: If either of them falls down, one can help the other up.",
+prayer: `Father, show me where I need to lean in with my brothers this week. Not generically \u2014 specifically. Is there a conversation I've been avoiding because it would require vulnerability? A check-in I should have made three days ago? A moment where one of them needs me to show up and I've been too focused on my own world to notice? Open my eyes to the brotherhood opportunities I'm walking past.
+
+Give me the humility to ask for help before I'm in crisis. I have a pattern \u2014 I wait until the weight is unsustainable before I reach out. That's not strength. That's stubbornness with a discipline veneer. Teach me to call earlier. To share when the issue is still manageable, not when it's already consumed me. Give me brothers who make it easy to be honest, and give me the character to take advantage of that environment.
+
+Show me where one of my brothers needs me right now. Not in a general sense \u2014 specifically. Is Craig carrying something he hasn't said out loud? Is someone in my circle going through something I could help with if I just asked the right question? Remove my self-focus enough to see the people around me clearly. I don't want to be the man who only engages brotherhood when he needs something from it.
+
+Give me wisdom about who belongs in my inner circle and who doesn't. Not everyone sharpens iron. Some people dull it. Some people drain. I need discernment to invest deeply in the right relationships and maintain healthy boundaries with the rest \u2014 not out of judgment, but out of stewardship. Time and trust are finite resources. Help me steward them with the same intentionality I bring to everything else.`
+},
+intercession: {
+scripture: "Job 42:10",
+text: "After Job had prayed for his friends, the LORD restored his fortunes.",
+prayer: `Father, I pray for Craig right now. By name. Whatever he's carrying \u2014 in his marriage, in his work, in his walk with You, in his own mind at night \u2014 strengthen him. He has poured into me consistently and he's never sent me a bill for it. I stand before You on his behalf and I ask You to meet him the way he's helped You meet me. Give him clarity where he's confused. Give him patience where he's frustrated. Give him breakthrough where he's stuck. Let him receive the same quality of support he gives.
+
+I pray for Uncle Bobby. Sustain him physically \u2014 he is an elder, a pillar, a man this family and this community depends on in ways they may not even realize. Protect his health. Protect his mind. Give him continued sharpness, continued wisdom, continued desire to invest in the next generation even when the next generation doesn't always make it easy. He has given decades of service. Let him see the fruit of everything he's planted. Let him know it mattered.
+
+I pray for every man in my circle who is carrying weight alone right now. The ones who won't call because they think calling is weakness. The ones who answer 'I'm good' every single time because they've never been in an environment where the real answer was safe. The ones who have been strong for so long that they've forgotten what honest vulnerability even feels like. Break through their isolation. Send someone to them the way You sent people to me. Nobody should fight alone, and nobody has to.
+
+I pray for the men I haven't met yet \u2014 the future brothers You'll bring into my life as the next season unfolds. Prepare them. Prepare me for them. Let the connections You're orchestrating be marked by the same honesty, accountability, and covenant that marks my current brotherhood.
+
+And I remember the principle of Job 42:10 \u2014 that Job's restoration followed his intercession for others. I don't pray for my brothers as a transaction. I pray because I love them. But I trust You to honor the pattern You established in Your own word.`
+},
+declaration: {
+scripture: "Amos 3:3",
+text: "Do two walk together unless they have agreed to do so?",
+prayer: `I declare over my brotherhood: I walk with men of purpose. My inner circle is not accidental \u2014 it is appointed by God for this season and for this mission. Every man He has placed in my life is there for a reason, and I will honor that assignment by showing up with the same honesty, strength, and consistency I expect from them.
+
+I declare that I am not a lone wolf. The enemy's oldest strategy against men is isolation \u2014 convince the man he can handle it alone, cut him off from his support structure, then pick him off when he's tired. I reject that strategy with my full chest. I was designed for partnership. I was built for brotherhood. And I will not apologize for needing the men God gave me.
+
+I declare that the men in my circle are covered by my prayers. When the enemy comes for Craig, he finds me already praying. When pressure comes for Uncle Bobby, he finds me already standing in the gap. When any brother in my sphere faces a battle he didn't expect, he does not face it alone \u2014 because I have made a covenant to show up, and I keep my covenants.
+
+I declare that my friendships are marked by truth, not comfort. We don't tell each other what feels good \u2014 we tell each other what's real. We don't protect each other's egos \u2014 we protect each other's trajectories. We are sharpening instruments, not echo chambers. And the friction is the point.
+
+I declare that this brotherhood produces something in me that I cannot produce alone \u2014 accountability, humility, laughter, perspective, correction, and the kind of courage that only comes from knowing someone has your back. I am a better man because of the men around me. I declare that, and I will live like I believe it.`
+},
+warfare: {
+scripture: "Matthew 18:19",
+text: "Again, truly I tell you that if two of you on earth agree about anything they ask for, it will be done for them by My Father in heaven.",
+prayer: `In the name of Jesus, I come against the spirit of isolation that targets men \u2014 specifically, that targets me and the men in my circle.
+
+I bind the lie that says 'you should be able to handle this alone.' That lie has destroyed men. Good men. Strong men. Men who looked fine on the outside while they were dying on the inside. Men who had access to brotherhood but were too proud to use it. I reject that lie for myself and I reject it for every man in my circle. We were not designed for solitary operation. That's the enemy's blueprint, not God's.
+
+I bind every force that would create division between me and my brothers. Misunderstandings that go unaddressed and fester. Offenses that grow in silence instead of being resolved in honesty. Jealousy that creeps in when one brother succeeds and the other hasn't yet. Competition that replaces collaboration. Schedule conflicts that aren't really about schedule \u2014 they're about priority. I bind all of it. My brotherhood is not a battleground \u2014 it's a fortress.
+
+I bind the schedule excuse. The one that says 'I'll call next week' and then next week becomes next month. The one that lets busyness achieve isolation without anyone noticing. The enemy loves busyness because it does his work for him \u2014 it separates men without any obvious spiritual attack. I reject the pattern. I will prioritize the men in my life above the tasks on my list, because tasks don't pray for me at midnight.
+
+I loose the spirit of agreement over my brotherhood. Matthew 18:19 says that when two agree, the Father acts. I want to walk in that level of unified prayer with my brothers \u2014 not just friendly conversation, but actual spiritual agreement that moves heaven. Where we agree, heaven moves. I loose that power over our relationships and over every prayer we bring together.
+
+I loose vulnerability, honesty, and courage among the men in my circle. I loose the willingness to call at midnight. The willingness to say 'I need help' without shame. The willingness to let another man see the unfinished, imperfect, still-under-construction version. That's where real brotherhood lives, and I loose it in full right now.`
+},
+},
+
+mind: {
+adoration: {
+scripture: "Isaiah 55:8-9",
+text: "For My thoughts are not your thoughts, neither are your ways My ways, declares the LORD.",
+prayer: `Father, Your mind is above mine. Not slightly \u2014 infinitely. The gap between Your understanding and my understanding is the same gap between the heavens and the earth. I worship You for that distance, because it means there's always more \u2014 more perspective I haven't accessed, more wisdom I haven't received, more clarity I haven't touched. I will never exhaust what You know.
+
+You hold every variable I can't see. The deals I think are lost \u2014 You see the full picture. The conversations I think went wrong \u2014 You see the fruit they'll produce three months from now. The decisions I'm agonizing over \u2014 You already know the outcome and You're not nervous about any of them. I worship You as the God of omniscient perspective. My best analysis is a fraction of a fraction. Yours is the whole.
+
+You are the source of every clear thought I've ever had. Every moment of discernment on the floor, every flash of insight in a conversation, every time I saw something coming before it arrived \u2014 those weren't just good instincts developed by experience. Those were downloads from a mind infinitely greater than mine. I worship You as the origin of my best thinking. When I'm sharp, it's because You gave me access to something beyond my natural capacity.
+
+You are not confused by what confuses me. When my mind races at 2am \u2014 when the thoughts pile up faster than I can sort them, when anxiety presents itself as productivity and fear presents itself as wisdom \u2014 You are perfectly still. Perfectly clear. Perfectly in control. I worship You for the peace that exists in Your mind, even when it hasn't reached mine yet. Your clarity is available to me, and I worship You for leaving the door open.`
+},
+confession: {
+scripture: "Philippians 4:8",
+text: "Whatever is true, whatever is noble, whatever is right, whatever is pure, whatever is lovely, whatever is admirable \u2014 if anything is excellent or praiseworthy \u2014 think about such things.",
+prayer: `Father, my thought life has not consistently met the Philippians 4:8 standard, and I'm not going to stand here and pretend otherwise.
+
+Where my mind went to places it shouldn't have \u2014 where I entertained thoughts that weren't true, weren't noble, weren't pure \u2014 I confess it. I didn't always shut the door fast enough. I didn't always take the thought captive before it took root and started bearing fruit in my emotions. Some thoughts I let run longer than I should have because in the moment they felt easier than fighting them, or because I told myself 'I'm just processing.' I confess that as passivity, and passivity in the mind always leads to defeat in behavior.
+
+Where I rehearsed worst-case scenarios instead of standing on Your word \u2014 where I played out conversations that hadn't happened yet, catastrophized outcomes that weren't certain, and mentally lived in futures You never promised and never intended \u2014 I confess that as faithless thinking. Anxiety dressed as preparation is still anxiety. Planning dressed as prayer is still worry. Where I chose it over trust, I repent and I ask You to reset the default.
+
+Where I meditated on offense instead of releasing it \u2014 where someone's words or actions looped in my head and I kept replaying the situation, building my case, rehearsing what I should have said, sharpening my argument \u2014 I confess that. That's not discernment. That's mental imprisonment. The replay doesn't fix the situation \u2014 it just keeps me chained to it and gives the enemy free rent in my head.
+
+Where I consumed content that polluted my thinking \u2014 where what went in through my eyes and ears at night directly contradicted what I declared with my mouth in the morning \u2014 I confess the inconsistency. I can't fill the well with junk and expect clean water. Realign what I consume with what I declare. I can't afford the gap.`
+},
+thanksgiving: {
+scripture: "1 Corinthians 2:16",
+text: "For who has known the mind of the Lord so as to instruct Him? But we have the mind of Christ.",
+prayer: `Thank You, Father, that I have access to the mind of Christ. That is a staggering statement and I refuse to treat it casually or turn it into a bumper sticker. The same mind that created the universe, that confounded the Pharisees with a single question, that saw through every trap and every motive, that held perfect composure under the weight of Roman execution \u2014 I have access to that mind through the Holy Spirit. That's not motivational language. That's theology. And I thank You for it.
+
+Thank You for every moment of clarity I've experienced recently. The read on the deal that turned out to be exactly right. The insight in prayer that reframed a situation I'd been stuck on for days. The moment in conversation where the right words came \u2014 not because I'm articulate, but because something beyond my natural capacity provided them in real time. Those moments are evidence that Your mind is accessible to me. They're proof that the channel is open. Thank You for keeping it open.
+
+Thank You for catching me before I spiraled. The moments where a toxic thought started to build momentum and something \u2014 Your Spirit \u2014 interrupted it. The whisper that said 'that's not true' before the lie took root and became a mood, a posture, a decision. The check in my spirit when I was about to make a decision from emotion instead of wisdom. Those catches saved me from consequences I can't fully calculate. Thank You for the invisible interventions I'll never fully appreciate this side of eternity.
+
+Thank You for the discipline of renewal. For the mornings where I chose the Word over the phone. For the prayers that recalibrated my thinking before the day could distort it. Thank You that the renewal process works \u2014 that I think differently now than I did a year ago, and that shift is not self-improvement. It's Your Spirit renovating my mind from the inside. I'm grateful the renovation is ongoing.`
+},
+supplication: {
+scripture: "Psalm 119:18",
+text: "Open my eyes that I may see wonderful things from Your law.",
+prayer: `Father, guard my mind today. Not just from obvious attacks \u2014 from the subtle ones. The ones that don't look like an assault but feel like reasonable thoughts. The quiet lie that says 'you're falling behind.' The false narrative that says 'everyone else has it figured out and you're the only one struggling.' The slow drain that happens when I stop feeding my mind truth and start feeding it noise, comparison, and speculation. Guard me from all of it.
+
+Give me mental clarity today. I need a mind that's sharp for the floor \u2014 that can read a client, coach a rep, manage a pipeline, hold strategy, and make real-time adjustments simultaneously without dropping any of them. But I also need a mind that's clear for the evening \u2014 for the conversation with her, for the Debrief, for the prayer time, for the rest. I can't afford a foggy mind in any arena. Clear it. Sharpen it. Sustain it through every context I operate in today.
+
+When the 2am thoughts come \u2014 and they will, because they always do, because that's when the house is quiet and the defenses are down \u2014 give me the awareness to identify them as what they are. Not wisdom. Not preparation. Not legitimate processing disguised as insomnia. Just noise. Help me distinguish between the Holy Spirit prompting genuine reflection and the enemy triggering anxious rehearsal. They can feel identical in the dark. Give me discernment in those moments that cuts through the ambiguity.
+
+Open my eyes to see what I've been missing in Your Word. I've read the same scriptures many times. Show me something I haven't seen yet. Not novelty \u2014 depth. Layers I've walked over because I was reading for completion instead of revelation. Make the Word alive to me today in a way that changes how I think, not just what I know. I don't need more information. I need more transformation.`
+},
+intercession: {
+scripture: "2 Timothy 1:7",
+text: "For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.",
+prayer: `Father, I pray for every person in my sphere who is fighting a mental battle they haven't named out loud \u2014 because naming it would feel like losing.
+
+I pray for the reps on my floor who carry anxiety into the shift. The ones whose minds are racing before they ever sit down \u2014 worrying about their numbers, their bills, their families, their futures. The ones who are physically present but mentally somewhere else entirely. Give them a sound mind. Break the loop. Let them be fully present today, even if it's just for this shift. One day of mental freedom can change a trajectory.
+
+I pray for the men I know who are battling thoughts of worthlessness. Strong men. Competent men. Men who look fine from the outside \u2014 but whose internal dialogue is a war zone. The voice that says 'you're a fraud.' The voice that says 'one day everyone will find out you're not what you pretend to be.' That voice is a liar and I pray against it on their behalf. Replace it with the truth of who You made them to be \u2014 chosen, equipped, purposed.
+
+I pray for anyone in my circle struggling with their thought life in ways they're ashamed to talk about. The late-night mental patterns. The compulsive thinking that feels like a prison. The obsessive loops that feel impossible to break no matter how hard they try. They may never tell another person \u2014 but You see it. Meet them in it. Bring freedom, not through willpower or white-knuckling, but through the power of Your Spirit doing what human effort can't.
+
+I pray for my woman's thought life. Protect her mind from destructive self-talk. From replaying wounds on repeat. From projecting worst-case outcomes onto our process. Give her peace of mind \u2014 real peace, not the manufactured kind that breaks at the first sign of pressure. Let her thoughts about us, about herself, about the future be anchored in truth, not trauma.
+
+Pour out the spirit of power, love, and self-discipline over every mind I've just named. Not timidity. Not anxiety. Not chaos. Power. Love. Self-discipline. That's what You gave. Let them receive it today.`
+},
+declaration: {
+scripture: "Romans 12:2",
+text: "Do not conform to the pattern of this world, but be transformed by the renewing of your mind.",
+prayer: `I declare over my mind today: I am being transformed by the renewing of my mind. Not by willpower. Not by positive thinking. Not by motivational podcasts or self-help frameworks. By the Spirit of God engaging my thinking at a level deeper than cognition, deeper than habit, deeper than personality.
+
+I declare that I am not a slave to anxious thinking. The loops, the spirals, the catastrophic projections, the 2am mental courtroom \u2014 those do not own me. I have the mind of Christ, and the mind of Christ is not anxious. It is clear. It is composed. It is rooted in the sovereignty of the Father who holds all things. I operate from that mind, not from the anxious one.
+
+I declare that I do not conform to the world's thinking patterns. The world says 'worry about tomorrow.' Jesus says 'today has enough trouble of its own.' The world says 'your value is your output.' God says 'your value was decided at the cross.' The world says 'control everything.' God says 'trust Me with what you can't control.' I declare alignment with God's patterns and I renounce conformity to the world's, no matter how logical the world's patterns appear.
+
+I declare that every thought that contradicts God's Word gets identified and dismissed. Not entertained. Not negotiated with. Not given a hearing so I can 'consider all perspectives.' Identified as hostile and taken captive, per 2 Corinthians 10:5. My mind is not an open forum \u2014 it's a guarded territory, and only truth gets residency.
+
+I declare that my mind is sharp, focused, and sound today. I think clearly on the floor. I think clearly in conversation. I think clearly in prayer. I think clearly in rest. My mind is an asset to my mission, not a liability. Not today. I declare it and I will steward it accordingly.`
+},
+warfare: {
+scripture: "2 Corinthians 10:5",
+text: "We demolish arguments and every pretension that sets itself up against the knowledge of God, and we take captive every thought to make it obedient to Christ.",
+prayer: `In the name of Jesus, I go to war over my mind right now. This is not a metaphor. This is engagement.
+
+I take captive the thought of fear. The one that says 'you can't sustain this pace.' The one that looks at the demands \u2014 the floor, the relationship, the system, the standards, the brotherhood, the stewardship of it all \u2014 and says 'something will break.' I identify that thought. It does not come from God, because God has not given me a spirit of fear. I take it captive. I make it obedient to Christ. And I replace it with Philippians 4:13 \u2014 I can do all things through Christ who strengthens me. That's not a poster on a gym wall. It's a weapon, and I use it now.
+
+I take captive the thought of inadequacy. The one that whispers at 2am: 'You're not enough for this role. You're not enough for her. You're not enough for the standard you set.' I demolish that argument. It sets itself up against the knowledge of God \u2014 against the truth that He who called me is faithful, that He wouldn't assign what He won't equip, that His grace is sufficient for every gap in my capacity. That thought is a pretension and I tear it down with both hands.
+
+I take captive the thought of condemnation over past failures. The replay reel that shows me my worst moments on repeat, always at the worst possible time. The memory that the enemy strategically surfaces when I'm tired, vulnerable, or making progress. I bind the replay. The blood covers those moments. They are forgiven, processed, and closed. I will not reopen sealed cases, and I will not let the prosecutor who lost the case keep presenting evidence.
+
+I take captive the thought that says 'she'll leave.' That projection has no basis in what God has spoken over the restoration process. It's a fear masquerading as preparation, and I refuse it. I bind it from my mind and I loose the truth: that God completes what He starts, and He started this.
+
+I take captive every comparison thought. Every measure-yourself-against-another-man thought. Every 'you should be further by now' thought. I demolish them all. My timeline is God's timeline. My assignment is God's assignment. And I will run my race without looking at someone else's lane.
+
+My mind is not a playground for the enemy. It is a guarded territory under the authority of Christ. Every thought submits to Him or it is expelled. That is the standard and I enforce it right now. No exceptions. No negotiations. No entry without clearance.`
+},
+},
+
+body: {
+adoration: {
+scripture: "Psalm 139:13-14",
+text: "For You created my inmost being; You knit me together in my mother's womb.",
+prayer: `Father, You are the designer of this body. Not random biology, not evolutionary accident \u2014 intentional craftsmanship. You decided the frame. You decided the capacity. You decided the energy systems, the endurance thresholds, the ability to stand on a sales floor for ten hours and still have something left for the evening. All of it is Your engineering.
+
+I worship You for the precision of what You made. The nervous system that lets me read a room before a word is spoken. The vocal cords that let me lead a team, coach a rep, close a deal, and pray out loud. The hands that work. The mind that processes. The lungs that breathe without me thinking about it. Thousands of involuntary processes are running right now \u2014 keeping me alive, keeping me functional, keeping me operational \u2014 and I didn't initiate a single one of them. That's Your faithfulness operating at a biological level, and I worship You for it.
+
+You knit me together. That word implies intimacy \u2014 the same God who holds galaxies in place and sustains solar systems took the time to construct me cell by cell, fiber by fiber, thought by thought. My body is not an afterthought to my spiritual life. It's the vehicle You chose to house Your Spirit. A temple. I worship You for the dignity You gave to the physical \u2014 for not making us disembodied spirits, but embodied people with flesh and bone and the ability to touch, serve, work, embrace, and worship in physical space. That was a choice. And it was a good one.`
+},
+confession: {
+scripture: "Romans 12:1",
+text: "Offer your bodies as a living sacrifice, holy and pleasing to God \u2014 this is your true and proper worship.",
+prayer: `Father, I confess that I haven't consistently treated this body as a temple. I've treated it as a tool \u2014 something to extract performance from, something to push until it breaks, and something to neglect when the mission felt more important than the maintenance.
+
+Where I chose comfort over discipline \u2014 the skipped workout, the third meal that was junk because I didn't plan, the night I stayed up too late consuming content instead of resting because rest felt unproductive \u2014 I confess it. Not because You're legalistic about my sleep schedule. But because this body is the vehicle for everything You've assigned me. When I neglect it, I'm not just hurting myself. I'm neglecting the mission itself.
+
+Where I pushed past legitimate signals of rest \u2014 where my body said 'stop' and I treated that as weakness instead of wisdom \u2014 I confess that as poor stewardship masked as dedication. You built rest into creation itself. The seventh day wasn't a suggestion for people with less drive. Where I act like rest is for people without my responsibilities, I'm operating in pride, not strength.
+
+Where I numbed instead of dealt with what needed dealing with \u2014 where food, screens, or any other substitute was used to avoid processing what actually needed processing \u2014 I confess that as avoidance. The body bears the cost of what the soul won't face. Where I chose the shortcut, realign me to the honest route, even when the honest route is longer and harder.
+
+This body is a living sacrifice. That means it's alive and offered simultaneously \u2014 active and surrendered at the same time. Where I've been active without being surrendered, or surrendered without being active, recalibrate me. Both postures are required.`
+},
+thanksgiving: {
+scripture: "Psalm 18:32-34",
+text: "It is God who arms me with strength and keeps my way secure.",
+prayer: `Thank You, Father, for health. I say that specifically and deliberately because I know it's not guaranteed. Men my age get diagnoses they didn't expect. Men who look strong get news that changes everything overnight. The fact that I woke up today with a functioning body, a clear mind, and the energy to pursue what You've assigned \u2014 that is a gift, and I name it before You with gratitude.
+
+Thank You for the strength to run a full shift. Standing for hours. Holding energy when the floor is flat and the momentum isn't there. Coaching, closing, leading, adjusting, encouraging \u2014 all of it requires physical capacity that I didn't self-generate. You've given me that capacity. Not because I earned it with a gym routine. Because You sustain what You assign.
+
+Thank You for the specific moments recently where my body held up under pressure. The long day that should have broken me but didn't. The shift where energy came from somewhere I can't explain \u2014 not caffeine, not adrenaline, but genuine supernatural sustain that carried me past what my habits deserved. Thank You for the days my body performed beyond what my stewardship justified. That's grace applied to biology.
+
+Thank You for the ability to be physical \u2014 to work with my hands, to be present in a room, to embrace the people I love, to stand on my feet and lead with my whole body, not just my words. There are men who can't do what I just described. I will not take the basics for granted today or any day.
+
+Thank You that You arm me with strength. Not that I manufacture it through discipline alone \u2014 You arm me with it. That's a provision I receive today with open hands and an honest acknowledgment: the strength is Yours.`
+},
+supplication: {
+scripture: "Isaiah 40:31",
+text: "But those who hope in the LORD will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.",
+prayer: `Father, I need energy today. Not the forced kind \u2014 the sustained kind. The kind that doesn't crash at 2pm. The kind that holds through the close, through the coaching conversations, through the drive home, through the evening, through the Debrief, through the prayer time. I need energy that comes from You, not from a cup or a playlist.
+
+My body is tired. I can feel it. The weeks compound, the shifts compound, the emotional weight compounds, and the body keeps the score of all of it. I'm not asking for superhuman stamina \u2014 I'm asking for daily bread applied to my physical frame. Isaiah 40 says those who hope in You renew their strength. I'm hoping in You right now. Not in my discipline. Not in my routine. In You. Renew what was spent. Restore what was depleted.
+
+Help me steward my body with wisdom today \u2014 not just push it harder and call that discipline. Show me the difference between holy endurance and reckless self-neglect. Sometimes the most spiritual thing I can do is sleep. Sometimes the most productive thing I can do is eat a real meal instead of skipping it. Sometimes the most disciplined thing I can do is rest when my mind says keep going. I need wisdom to know which moment is which, because I default to pushing.
+
+Protect me from injury, from sickness, from the kind of physical breakdown that comes from sustained stress without adequate recovery. I can't afford to go down. Too much depends on me being operational \u2014 the team, the relationship, the system, the people counting on my presence. Guard this body. Not because I'm more important than anyone else \u2014 but because You assigned me a mission that requires my physical presence, and I'm asking You to protect the vehicle.
+
+Give me the desire to steward my health long-term, not just survive today. Help me build habits that serve the man I'll be in ten years, not just the man standing on today's floor.`
+},
+intercession: {
+scripture: "3 John 1:2",
+text: "Dear friend, I pray that you may enjoy good health and that all may go well with you, even as your soul is well.",
+prayer: `Father, I pray for Uncle Bobby's health. He is an elder, a pillar, a man this family and this community depends on \u2014 often in ways no one says out loud until he's not there. Sustain his body. Protect his strength. Give him continued sharpness of mind and vitality of body. He has given decades of service \u2014 let his body hold for decades more. Whatever medical needs he has, spoken or unspoken, visible or hidden \u2014 meet them. I stand before You on his behalf with the full weight of a man who loves him.
+
+I pray for every person in my circle carrying a physical burden they haven't talked about. The one dealing with chronic pain that never fully goes away. The one waiting on test results and trying to pretend they're not scared. The one whose body is fighting something they haven't told anyone about yet because saying it out loud would make it real. You know each situation by name and by detail. Bring healing where healing is needed. Bring endurance where healing hasn't come yet. And bring peace either way.
+
+I pray for the reps on my floor who are physically depleted. The ones running on empty \u2014 poor sleep, poor nutrition, burning the candle at both ends because they think that's what grinders do and the culture rewards the appearance of sacrifice. Open their eyes to the connection between their physical stewardship and their production. A man who neglects his body is borrowing from tomorrow to fund today, and the interest rate is brutal.
+
+I pray for my woman's health. Physical and emotional. The stress of restoration takes a toll the body absorbs whether she names it or not. Cover her. Give her rest that actually restores. Give her the awareness and permission to take care of herself even when the process is demanding and the emotional weight is heavy.
+
+I pray for my own future health. God, I want to be operational for decades. I want to lead, serve, build, and be fully present for my family long-term. Not partially present. Not burned-out present. Fully alive. That requires decisions I'm making today. Help me make the ones that serve longevity, not just this quarter's productivity.`
+},
+declaration: {
+scripture: "1 Corinthians 6:19-20",
+text: "Do you not know that your bodies are temples of the Holy Spirit, who is in you, whom you have received from God?",
+prayer: `I declare over my body today: this body is a temple of the Holy Spirit. Not a rental property. Not a machine to be run into the ground. Not a tool I own \u2014 a temple God inhabits. The Spirit of the living God resides in me, and He deserves a well-maintained house. Not a perfect house. A maintained one.
+
+I declare that I will honor God with my body today. That means what I eat matters \u2014 not because I'm obsessive, but because fuel determines function. What I drink matters. How I sleep matters. How I move matters. The same standard of excellence I bring to the floor, I bring to my own body. Colossians 3:23 applies to stewardship of this temple as much as it applies to sales.
+
+I declare that this body is an asset to my mission, not a liability. My energy serves the team. My presence commands rooms. My physical discipline models the standard I set for others. When I show up looking like I take care of the house God gave me, I give my team permission to do the same. My body is a leadership tool, and I declare it will be maintained like one.
+
+I declare that I am not my own \u2014 I was bought at a price. That means this body doesn't belong to me to abuse, neglect, or run into the ground for the sake of one more quarter. It belongs to God. I'm the tenant. And I will steward what I've been given with the same seriousness I'd bring to managing someone else's most valued property.
+
+I declare strength over this body. Not vanity strength \u2014 functional strength. The kind that lasts through a shift, through a hard conversation, through a full day of execution, and still has something left for prayer and presence. I declare Isaiah 40:31 over my physical capacity today: renewed strength, not recycled adrenaline. Eagle strength. Marathon strength. The kind that comes from hoping in the Lord.`
+},
+warfare: {
+scripture: "Romans 6:12-13",
+text: "Therefore do not let sin reign in your mortal body so that you obey its evil desires.",
+prayer: `In the name of Jesus, I come against every pattern of physical self-destruction that has operated in my life \u2014 whether it came openly or hid behind 'hustle culture' language.
+
+I bind laziness. Not tiredness \u2014 laziness. The kind that has energy but won't spend it. The kind that knows what should be done and chooses the couch instead. The kind that disguises itself as 'I deserve a break' when the truth is 'I'm avoiding discipline.' I bind it and I loose the spirit of physical diligence over my body. Not obsession \u2014 diligence. Steady, sustainable action.
+
+I bind passivity in my health. The avoidance of the gym. The avoidance of the meal prep. The avoidance of the doctor's appointment I keep rescheduling. The avoidance of the hard conversation with myself about what needs to change physically. I reject passivity in every form it takes. I am not a passive steward of what God gave me.
+
+I bind the glorification of burnout. The culture \u2014 especially in sales \u2014 that celebrates sleep deprivation, skipped meals, and grinding until you break as proof of commitment. That is not the Colossians 3:23 standard. Working with all your heart doesn't mean destroying the heart in the process. I reject the false equation of destruction and dedication. They are not the same thing.
+
+I bind every destructive habit that operates under the radar. The late-night eating. The screen addiction that steals sleep. The caffeine dependency that masks exhaustion instead of addressing it. The shortcuts that feel harmless in the moment but compound over months and years. I bring them into the light. Anything that undermines my physical capacity is a threat to my assignment, and I treat it accordingly.
+
+I loose discipline, energy, and physical wisdom over my body. I declare that this temple is operational, protected, and well-maintained. Not perfect \u2014 but intentionally stewarded with the excellence of a man who knows this body belongs to God. And the Spirit who lives in me empowers the stewardship I can't sustain on my own. That's the partnership, and I lean into it today.`
+},
+},
+
+finances: {
+adoration: {
+scripture: "Haggai 2:8",
+text: "'The silver is Mine and the gold is Mine,' declares the LORD Almighty.",
+prayer: `Father, every dollar that moves through my life \u2014 earned, saved, spent, given, invested \u2014 is Yours. You are the owner and I am the steward. I worship You for that distinction because it changes everything about how I hold money. A steward doesn't panic about the account balance the way an owner does. A steward manages what he's been given and trusts the Owner to provide what's needed next. I choose that posture today.
+
+You are the God of provision. Not provision in theory \u2014 provision in my actual, lived experience. You have funded every season of my life. The lean months and the abundant ones. The quarters that exceeded target and the ones that fell short. Through all of it, I was never forsaken. My bills were paid. My needs were met. Sometimes by a comfortable margin, sometimes by a miracle with minutes to spare. Either way \u2014 it was You. And I worship You for a track record that I can't argue with even when my anxiety tries.
+
+You are not a God of scarcity. The earth is Yours and everything in it. The cattle on a thousand hills. The silver. The gold. You don't run out. You don't miscalculate. You don't look at my needs and wonder where the resources will come from. I worship You as the God of more than enough \u2014 not because I want excess, but because my understanding of Your nature shapes my financial posture. When I know You're abundant, I steward from abundance. When I forget, I steward from fear. I choose to remember today.`
+},
+confession: {
+scripture: "Luke 16:10",
+text: "Whoever can be trusted with very little can also be trusted with much, and whoever is dishonest with very little will also be dishonest with much.",
+prayer: `Father, I confess that my financial stewardship hasn't always reflected the standard You've set \u2014 the standard of faithfulness in little so that I can be trusted with much.
+
+Where I spent from impulse instead of intention \u2014 where emotion drove a purchase instead of strategy, where instant gratification won over long-term discipline \u2014 I confess that. Not every purchase was sinful. But some were undisciplined. And undisciplined spending in small amounts creates undisciplined thinking in large ones. Luke 16:10 doesn't have a dollar threshold. It's a character test, and I haven't always passed it.
+
+Where I failed to give when You prompted me to give \u2014 where generosity was on my heart, where I felt the nudge clearly, and I overrode it with logic, with budget concerns, with 'I'll do it next time' \u2014 I confess that as disobedience dressed in financial wisdom. You don't prompt generosity randomly. When You put it on my heart to give, there's a person on the other end who needs it and a work in me that's being built. Where I withheld what You prompted, I blocked both.
+
+Where I let anxiety about finances override trust in Your provision \u2014 where I lay awake calculating instead of praying, where I operated from a scarcity mindset even in seasons of abundance \u2014 I confess that as functional unbelief. I say I trust You. But trust looks like peace, not panic. Where my financial life produced anxiety instead of peace, the misalignment was mine, not Yours.
+
+Where I attached my identity to my income \u2014 where a big commission check made me feel like a bigger man and a dry month made me feel small \u2014 I confess that. My value is not my valuation. Realign that in me before it calcifies.`
+},
+thanksgiving: {
+scripture: "Philippians 4:19",
+text: "And my God will meet all your needs according to the riches of His glory in Christ Jesus.",
+prayer: `Thank You, Father, for provision. Not vague, abstract provision \u2014 specific, named, recent provision that I can point to and say 'that was God.'
+
+Thank You for the commission checks that funded this month. I trace each one back to You. The lead came from somewhere I didn't orchestrate. The timing aligned in ways I didn't plan and couldn't have planned. The client said yes for reasons that went beyond my pitch \u2014 something moved in them that I didn't move. You were operating in every transaction, and I will not pretend otherwise or take credit for what Your hand did.
+
+Thank You that every bill is covered. That's not a small thing. That's daily bread. That's Philippians 4:19 in action. There are people right now \u2014 good people, hardworking people, people who love God as much as I do \u2014 who are choosing between rent and groceries this week. The fact that I don't have to make that choice today is provision, and I receive it with gratitude instead of entitlement.
+
+Thank You for the ability to be generous. To give to the church without anxiety. To bless someone unexpectedly. To cover a meal. To tip well. To put something in an envelope for someone who needs it. Generosity is only possible when there's margin, and margin is only possible when You provide beyond what I consume. Thank You for building a financial life that has room to give, because giving is where the joy is.
+
+Thank You for the lessons the lean seasons taught me. The months where I had to trust without seeing the provision in advance. The quarters where the pipeline was dry and I had to believe You were still working behind what I could see. Those seasons didn't feel like gifts in real time \u2014 they felt like tests. But they built a faith in Your provision that the abundant seasons could never have produced on their own. I'm grateful for both the abundance and the scarcity, because both built something in me.`
+},
+supplication: {
+scripture: "Proverbs 10:22",
+text: "The blessing of the LORD brings wealth, without painful toil for it.",
+prayer: `Father, open doors for increase this quarter. Not greed \u2014 capacity. I don't want more so I can hoard more, flex more, or feel more important. I want more so I can give more, build more, invest more, and steward more for Your kingdom and for the people in my care. Expand my financial territory so I can expand my impact. That's the motive. Hold me to it.
+
+Show me the next financial move. I need wisdom on what to save and what to deploy. What to invest and what to hold. What to give and what to protect. I don't always know the difference between holding wisely and holding fearfully, between giving generously and giving recklessly. Give me the discernment to steward aggressively where aggression is warranted and to rest where patience is required.
+
+Bring the deals. I've done the work \u2014 the calls, the follow-ups, the coaching, the process, the late conversations, the early mornings. I'm asking You to move on what I can't control. Open the clients' hearts. Remove the barriers I can't see. Let the ones who are ready be connected with me and my team at the right time. I'm not asking You to bypass the work \u2014 I'm asking You to bless the work I've already done and bring the harvest on seeds I've been planting.
+
+Give me a long-term financial vision. Not just surviving month to month or quarter to quarter, but building something that outlasts me. Help me think generationally \u2014 about the wealth I'm building not just for my life, but for my family, my legacy, and the kingdom purposes You have for my resources. I don't want to be the man who made good money and left nothing behind.
+
+Protect me from financial foolishness. From the investment that looks smart but isn't. From the expense that feels justified but drains capacity. From the decision that satisfies the moment but mortgages the future. Give me wisdom that sees three moves ahead, not just the next one. And give me the discipline to act on what I see.`
+},
+intercession: {
+scripture: "2 Corinthians 9:8",
+text: "And God is able to bless you abundantly, so that in all things at all times, having all that you need, you will abound in every good work.",
+prayer: `Father, I pray for the reps on my floor who are financially stressed right now. Some of them are one bad month from a real crisis \u2014 and they sit down at their desk every day carrying that weight underneath the smile. The pressure they feel isn't just performance pressure. It's survival pressure. And it affects their confidence, their energy, their ability to close. Have mercy on them. Bring the deals. Bring the clients. Let them eat today. Let this shift produce for the ones who need it most.
+
+I pray for anyone in my circle under financial pressure. The ones who are too proud to say it. The ones who are smiling in public and calculating at 3am. The ones who are drowning in debt they created through decisions they'd give anything to undo. Give them wisdom. Remove desperation \u2014 because desperation leads to bad decisions, and bad decisions deepen the hole. Give them a path out that doesn't require a miracle, but accompany it with a miracle anyway.
+
+I pray for the families affected by my team's production. When my floor produces, families get served. Needs get met. Promises get kept. When it doesn't, families go without. Let my team understand the weight of what they carry \u2014 not as pressure that crushes them, but as purpose that drives them. Every close is a family served. Let that truth burn in them today.
+
+I pray for generosity to flow through my entire circle. Not just from me \u2014 through everyone. Open hands. Open hearts. And the faith to give even when the account balance doesn't look like it has margin for it. Because You bless abundantly \u2014 and the conduit for that abundance is often one person's willingness to release what they're gripping.
+
+I pray for the financial systems and institutions that affect the people I lead. Economic stability. Employment opportunities. A market that cooperates with the effort my team brings. I know You're sovereign over all of it. Move on behalf of the people in my care.`
+},
+declaration: {
+scripture: "Malachi 3:10",
+text: "'Bring the whole tithe into the storehouse... Test Me in this,' says the LORD Almighty, 'and see if I will not throw open the floodgates of heaven.'",
+prayer: `I declare over my finances today: I am a tither and a giver, and God's blessing is on my finances because my hands are open, not clenched. I give first. I give willingly. And I trust the God who said 'test Me in this' to back up His own word.
+
+I declare that debt has no permanent hold on my financial future. Whatever I owe, I am working to eliminate it with discipline and strategy, backed by the wisdom of God. I am not a slave to the lender \u2014 I am being freed by the discipline of stewardship and the blessing of a God who specializes in breaking chains. Debt does not define my financial identity. It is a temporary condition being addressed by a permanent God.
+
+I declare that scarcity has no voice in my financial decisions. I do not make decisions from fear. I do not hoard out of anxiety. I do not withhold generosity because I'm afraid there won't be enough tomorrow. My God supplies all my needs according to His riches in glory in Christ Jesus. That's the balance sheet I operate from \u2014 not the one on my phone, but the one in heaven.
+
+I declare that provision flows because I honor God with the first of everything I earn. The tithe is not a bill \u2014 it's a declaration of trust. It says 'God, I believe You are the source, and I prove it by giving You the first portion before I see how the rest will work out.' That's faith with a checkbook, and I walk in it.
+
+I declare Malachi 3:10 over my financial life: the floodgates of heaven are open. Not because I deserve it. Not because I'm entitled to it. Because God invited me to test Him in this, and I have. I've brought the tithe. I've given the offering. I've released what He prompted. Now I stand on His word and I declare that blessing follows obedience. Not occasionally. Not partially. Abundantly. So much that there isn't room enough to contain it.
+
+I declare financial wisdom, financial discipline, financial generosity, and financial growth over this season. My money serves my mission. My income builds my legacy. And everything I earn is managed with the excellence of a man working for the Lord, not for himself. Colossians 3:23 covers this domain too.`
+},
+warfare: {
+scripture: "Deuteronomy 8:17-18",
+text: "You may say to yourself, 'My power and the strength of my hands have produced this wealth.' But remember the LORD your God, for it is He who gives you the ability to produce wealth.",
+prayer: `In the name of Jesus, I come against every spiritual force that targets my finances and the finances of those under my leadership.
+
+I bind the spirit of greed. The one that says 'more is always better.' The one that turns a healthy drive for production into an unhealthy obsession with accumulation. The one that makes a man neglect his health, his relationships, his soul, and his God in pursuit of a number that will never be enough. That spirit is a thief wearing a promotion's clothing, and I reject it. My financial ambition is governed by purpose, not possession.
+
+I bind the spirit of scarcity. The voice that says 'there's never enough.' The mindset that hoards, that fears, that tightens the grip on every dollar because it doesn't trust God to provide the next one. That spirit contradicts Philippians 4:19. It contradicts Malachi 3:10. It contradicts the testimony of every season God has already provided through. I bind it from my thinking and I loose the spirit of abundance \u2014 not extravagance, but confident trust in a God who supplies.
+
+I bind the spirit of entitlement. The one from Deuteronomy 8:17 \u2014 the voice that says 'my power and the strength of my hands produced this wealth.' The one that forgets the source. The one that takes credit and withholds worship. Every dollar I've ever earned passed through God's sovereignty before it reached my account. I will not forget that. I bind the amnesia of prosperity and I loose gratitude that remembers the source in every season.
+
+I bind financial sabotage. Unexpected expenses that appear right when margin was building. Deals that collapse without explanation right when the commission was needed most. Patterns of financial setback that feel targeted because they are. I cover my income, my accounts, my savings, and my financial future under the blood of Christ. What the enemy has stolen will be restored \u2014 Joel 2:25 \u2014 and what God is building in my financial life cannot be dismantled by invisible opposition.
+
+I loose wisdom, discipline, generosity, and supernatural provision over my finances. My money is under God's authority. My earning is under God's authority. My spending is under God's authority. My giving is under God's authority. Every financial decision I make today is made from a posture of stewardship, not ownership. And the Owner never runs out. That's final.`
+},
+},
+};
+
+var st={ad:null,af:null,vm:'single'};
+function r(){
+var a=document.getElementById('app');
+var d=st.ad?D.find(function(x){return x.id===st.ad}):null;
+var f=st.af?F.find(function(x){return x.id===st.af}):null;
+var data=d&&f&&MAP[d.id]?MAP[d.id][f.id]:null;
+a.innerHTML=
+'<div class="header">'+
+'<div class="h-tag">SENTINEL OPS \u00B7 PRAYER MAP</div>'+
+'<h1 class="h-title"><span>Operational</span><br><em>Prayer</em> <span>Map</span></h1>'+
+'<div class="h-sub">7 Functions \u00B7 7 Domains \u00B7 49 Positions</div>'+
+'<div class="h-verse">\u201CWhatever you do, work at it with all your heart, as working for the Lord.\u201D</div>'+
+'<div class="h-verse-ref">Colossians 3:23</div>'+
+'</div>'+
+'<div class="domain-nav">'+
+'<div class="nav-label">Select Domain</div>'+
+'<div class="domain-grid">'+
+D.map(function(dm){return '<button class="d-btn'+(st.ad===dm.id?' on':'')+'" data-d="'+dm.id+'">'+
+'<span class="d-ico">'+dm.ico+'</span>'+
+'<div><div class="d-nm">'+dm.nm+'</div><div class="d-vs">'+dm.vs+'</div></div>'+
+'</button>'}).join('')+
+'</div></div>'+
+(st.ad?
+'<div class="fn-section">'+
+'<div class="fn-top">'+
+'<div class="fn-label">Function</div>'+
+'<div class="fn-views">'+
+'<button class="fn-vb'+(st.vm==='single'?' on':'')+'" data-v="single">Single</button>'+
+'<button class="fn-vb'+(st.vm==='full'?' on':'')+'" data-v="full">All 7</button>'+
+'</div></div>'+
+(st.vm==='single'?
+'<div class="fn-grid">'+
+F.map(function(fn){return '<button class="f-btn'+(st.af===fn.id?' on':'')+'" data-f="'+fn.id+'" style="--fn-color:'+fn.hex+'">'+
+'<span class="f-num">'+fn.n+'</span>'+
+'<span class="f-nm">'+fn.nm+'</span>'+
+'<span class="f-dot" style="background:'+fn.hex+'"></span>'+
+'</button>'}).join('')+
+'</div>':'')+'</div>':'')+
+'<div class="content">'+
+(!st.ad?
+'<div class="empty"><div class="empty-title">Select a domain to begin</div><div class="empty-verse">\u201CPray without ceasing.\u201D \u2014 1 Thessalonians 5:17</div></div>'
+:st.vm==='single'&&!st.af?
+'<div class="empty"><div class="empty-title">Select a prayer function</div><div class="empty-verse">'+d.ds+'</div></div>'
+:st.vm==='single'&&data?
+'<div class="prayer-card">'+
+'<div class="pc-accent" style="background:linear-gradient(90deg,'+f.hex+','+f.hex+'66,'+f.hex+'22)"><div style="position:absolute;inset:0;background:inherit;filter:blur(6px);opacity:.5"></div></div>'+
+'<div class="pc-body">'+
+'<div class="pc-route" style="color:'+f.hex+'">'+f.nm+' \u2192 '+d.nm+'</div>'+
+'<div class="pc-desc">'+f.ds+'</div>'+
+'<div class="pc-ref" style="color:'+f.hex+';text-shadow:0 0 30px '+f.hex+'33">'+data.scripture+'</div>'+
+'<div class="pc-verse" style="border-color:'+f.hex+'"><span style="position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px;background:'+f.hex+';box-shadow:0 0 10px '+f.hex+'44"></span>\u201C'+data.text+'\u201D</div>'+
+'<div class="pc-divider"><span class="pc-divider-label" style="color:'+f.hex+'">Prayer</span></div>'+
+'<div class="pc-prayer">'+data.prayer.split('\n\n').map(function(p){return '<p>'+p.trim()+'</p>'}).join('')+'</div>'+
+'</div></div>'
+:st.vm==='full'?
+'<div class="full-header">'+
+'<div class="full-tag">Full Prayer Cycle</div>'+
+'<div class="full-nm"><span class="ico">'+d.ico+'</span>'+d.nm+'</div>'+
+'<div class="full-ds">'+d.ds+'</div>'+
+'</div>'+
+F.map(function(fn,i){
+var fd=MAP[st.ad]?MAP[st.ad][fn.id]:null;
+if(!fd)return '';
+return '<div class="full-card" style="animation-delay:'+i*.07+'s">'+
+'<div class="fc-accent" style="background:linear-gradient(90deg,'+fn.hex+','+fn.hex+'66,'+fn.hex+'22)"><div style="position:absolute;inset:0;background:inherit;filter:blur(5px);opacity:.45"></div></div>'+
+'<div class="fc-body">'+
+'<div class="fc-top">'+
+'<span class="fc-num" style="color:'+fn.hex+'">'+fn.n+'</span>'+
+'<span class="fc-fnm" style="color:'+fn.hex+';text-shadow:0 0 16px '+fn.hex+'33">'+fn.nm+'</span>'+
+'<span class="fc-badge" style="color:'+fn.hex+';border-color:'+fn.hex+'44">\u25CF</span>'+
+'</div>'+
+'<div class="fc-ref" style="color:'+fn.hex+';text-shadow:0 0 24px '+fn.hex+'22">'+fd.scripture+'</div>'+
+'<div class="fc-verse"><span style="position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px;background:'+fn.hex+';box-shadow:0 0 8px '+fn.hex+'44"></span>\u201C'+fd.text+'\u201D</div>'+
+fd.prayer.split('\n\n').map(function(p){return '<p>'+p.trim()+'</p>'}).join('')+
+'</div></div>'
+}).join('')
+:'')+
+'</div>'+
+'<div class="footer"><div class="ftr-v">\u201CWhatever you do, work at it with all your heart, as working for the Lord.\u201D</div><div class="ftr-r">COLOSSIANS 3:23 \u2014 SENTINEL OPS</div></div>';
+if(st.vm==='full')document.querySelectorAll('.full-card').forEach(function(el,i){setTimeout(function(){el.style.opacity='1'},i*80)});
+document.querySelectorAll('[data-d]').forEach(function(b){b.addEventListener('click',function(){st.ad=b.dataset.d;st.af=null;st.vm='single';r();window.scrollTo({top:document.querySelector('.domain-nav').offsetTop-20,behavior:'smooth'})})});
+document.querySelectorAll('[data-f]').forEach(function(b){b.addEventListener('click',function(){st.af=b.dataset.f;r();window.scrollTo({top:document.querySelector('.content').offsetTop-20,behavior:'smooth'})})});
+document.querySelectorAll('[data-v]').forEach(function(b){b.addEventListener('click',function(){st.vm=b.dataset.v;if(b.dataset.v==='full')st.af=null;r();window.scrollTo({top:document.querySelector('.content').offsetTop-20,behavior:'smooth'})})});
+}
+r();
+</script>
+</body>
+</html>
