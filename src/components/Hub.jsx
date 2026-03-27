@@ -8,6 +8,7 @@ const LINKS = {
   sunday_closing:   '/sunday-closing.html',
   avynn_prayer:     '/avynn-prayer.html',
   prayer_map:       '/prayer-map.html',
+  avynn_prayer_map:  '/avynn-prayer-map.html',
 }
 
 const TOOLS = [
@@ -18,6 +19,7 @@ const TOOLS = [
   { id:'ashley_checkin',  tag:'Weekly · Saturday',      person:'ashley',  title:'Weekly Check-In',    desc:"7 growth prompts. Most like herself, fell short, God spoke, patterns, covenant presence, temperature, need going forward.", meta:['Saturday','Individual','Logs to record'], color:'teal' },
   { id:'sunday_closing',  tag:'Weekly · Sunday · Joint',person:'together',title:'Sunday Closing',     desc:"4 joint prompts. Gratitude, what the week revealed, believing God for, prayer together. Generates a Covenant Word over them.", meta:['Sunday','JP & Ashley together','Covenant Word'], color:'gold' },
   { id:'avynn_prayer',    tag:'Nightly · Together',     person:'together',title:"Avynn's Prayer",     desc:"Drop your hearts about Avynn — her day, what you believe over her. Builds a customized prayer she repeats line by line with you.", meta:['Every night','JP & Ashley together','Avynn repeats'], color:'gold' },
+  { id:'avynn_prayer_map', tag:'Daily · Avynn',          person:'together',title:"Avynn's Prayer Map",  desc:"7 domains, 7 functions, 49 prayers written in Avynn's first-person voice. Identity, family, heart, friends, mind, body, faith.", meta:['7 domains','49 prayers','Her own voice'],          color:'gold' },
 ]
 
 const C = {
